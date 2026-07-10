@@ -1,28 +1,32 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
+console.log("STEP 1");
 
-// Load environment variables
-dotenv.config();
+require('dotenv').config();
 
-// Create Express app
+console.log("STEP 2");
+
+const express = require('express');
+
+console.log("STEP 3");
+
+const cors = require('cors');
+
+console.log("STEP 4");
+
+const connectDB = require('./config/db');
+
+console.log("STEP 5");
+
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Test route
-app.get("/", (req, res) => {
-  res.json({
-    message: "CampusHub API is running",
-  });
+app.get('/', (req, res) => {
+  res.json({ message: 'CampusHub API is running' });
 });
 
-// Port
 const PORT = process.env.PORT || 5000;
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
