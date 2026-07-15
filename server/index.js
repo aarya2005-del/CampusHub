@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 console.log(authRoutes);
 
-// connectDB();
+connectDB();
 
 const app = express();
 console.log("Express app created");
