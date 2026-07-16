@@ -51,14 +51,13 @@ exports.register = async (req, res) => {
     const token = jwt.sign(
   {
     id: user._id,
-    role: "student",
+    role: user.role,
   },
   process.env.JWT_SECRET,
   {
     expiresIn: "7d",
   }
 );
-
     return res.status(201).json({
       message: "User Registered Successfully",
       token,
@@ -113,15 +112,15 @@ if (!isMatch) {
 }
     // Generate JWT
     const token = jwt.sign(
-      {
-        email: user.email,
-        role: "student",
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+  {
+    id: user._id,
+    role: user.role,
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "7d",
+  }
+);
 
     return res.status(200).json({
   message: "Login Successful",

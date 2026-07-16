@@ -4,3 +4,9 @@ exports.getProfile = (req, res) => {
     user: req.user,
   });
 };
+
+exports.getAdminDashboard = (req, res) => {
+  res.status(200).json({
+    message: "Welcome to Admin Dashboard",
+  });
+};
