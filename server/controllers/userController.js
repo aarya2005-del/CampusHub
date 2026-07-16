@@ -1,5 +1,5 @@
 exports.getProfile = (req, res) => {
-  res.json({
+  res.status(200).json({
     message: "Profile fetched successfully",
     user: req.user,
   });
