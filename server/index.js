@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 console.log(authRoutes);
 const noticeRoutes = require("./routes/noticeRoutes");
-
+const studentRoutes = require("./routes/studentRoutes");
 connectDB();
 
 const app = express();
@@ -19,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use("/api/notices", noticeRoutes);
+app.use("/api/students", studentRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'CampusHub API is running' });
