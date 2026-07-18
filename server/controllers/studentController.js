@@ -132,3 +132,37 @@ exports.deleteStudent = async (req, res) => {
     });
   }
 };
+
+exports.searchStudents = async (req, res) => {
+  try {
+    const { name, department, year } = req.query;
+
+    const filter = {};
+
+    if (name) {
+      filter.name = {
+        $regex: name,
+        $options: "i",
+      };
+    }
+
+    if (department) {
+      filter.department = department;
+    }
+
+    if (year) {
+      filter.year = Number(year);
+    }
+
+    const students = await Student.find(filter);
+
+    return res.status(200).json({
+      students,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};

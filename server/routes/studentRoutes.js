@@ -10,6 +10,7 @@ const {
   getStudentById,
   updateStudent,
   deleteStudent,
+  searchStudents,
 } = require("../controllers/studentController");
 
 // Create Student (Admin only)
@@ -27,6 +28,12 @@ router.get(
   getAllStudents
 );
 
+// Search Students
+router.get(
+  "/search",
+  authMiddleware,
+  searchStudents
+);
 // Get Student By ID
 router.get(
   "/:id",
