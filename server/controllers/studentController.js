@@ -35,14 +35,36 @@ exports.createStudent = async (req, res) => {
 // Get All Students
 exports.getAllStudents = async (req, res) => {
   try {
-    const students = await Student.find().populate(
-      "createdBy",
-      "name email role"
-    );
+  const { page = 1, limit = 5, sort = "newest" } = req.query;
+const pageNumber = Number(page);
+const limitNumber = Number(limit);
+const skip = (pageNumber - 1) * limitNumber;
 
-    return res.status(200).json({
-      students,
-    });
+let sortOption = {};
+
+if (sort === "newest") {
+  sortOption = { createdAt: -1 };
+} else if (sort === "oldest") {
+  sortOption = { createdAt: 1 };
+} else if (sort === "az") {
+  sortOption = { name: 1 };
+} else if (sort === "za") {
+  sortOption = { name: -1 };
+}
+  const students = await Student.find()
+  .populate("createdBy", "name email role")
+  .sort(sortOption)
+  .skip(skip)
+  .limit(limitNumber);
+  const totalStudents = await Student.countDocuments();
+
+return res.status(200).json({
+  totalStudents,
+  currentPage: pageNumber,
+  totalPages: Math.ceil(totalStudents / limitNumber),
+  students,
+});
+
 
   } catch (error) {
     return res.status(500).json({
