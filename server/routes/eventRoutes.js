@@ -7,9 +7,12 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   createEvent,
   getAllEvents,
+  getUpcomingEvents,
+  getPastEvents,
   getEventById,
   updateEvent,
   deleteEvent,
+  
 } = require("../controllers/eventController");
 
 // Create Event (Admin only)
@@ -26,7 +29,18 @@ router.get(
   authMiddleware,
   getAllEvents
 );
-
+// Get Upcoming Events
+router.get(
+  '/upcoming',
+  authMiddleware,
+  getUpcomingEvents
+);
+// Get Past Events
+router.get(
+  '/past',
+  authMiddleware,
+  getPastEvents
+);
 // Get Event By ID
 router.get(
   "/:id",

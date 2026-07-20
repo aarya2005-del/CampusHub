@@ -127,3 +127,44 @@ exports.deleteEvent = async (req, res) => {
     });
   }
 };
+exports.getUpcomingEvents = async (req, res) => {
+  try {
+    const today = new Date();
+
+    const events = await Event.find({
+      eventDate: { $gte: today },
+    })
+      .populate('createdBy', 'name email role')
+      .sort({ eventDate: 1 });
+
+    return res.status(200).json({
+      events,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.getPastEvents = async (req, res) => {
+  try {
+    const today = new Date();
+
+    const events = await Event.find({
+      eventDate: { $lt: today },
+    })
+      .populate('createdBy', 'name email role')
+      .sort({ eventDate: -1 });
+
+    return res.status(200).json({
+      events,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
