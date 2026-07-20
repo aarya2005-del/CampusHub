@@ -35,7 +35,30 @@ exports.createStudent = async (req, res) => {
 // Get All Students
 exports.getAllStudents = async (req, res) => {
   try {
-  const { page = 1, limit = 5, sort = "newest" } = req.query;
+  const {
+  name,
+  department,
+  year,
+  page = 1,
+  limit = 5,
+  sort = 'newest',
+} = req.query;
+const filter = {};
+
+if (name) {
+  filter.name = {
+    $regex: name,
+    $options: 'i',
+  };
+}
+
+if (department) {
+  filter.department = department;
+}
+
+if (year) {
+  filter.year = Number(year);
+}
 const pageNumber = Number(page);
 const limitNumber = Number(limit);
 const skip = (pageNumber - 1) * limitNumber;
@@ -51,7 +74,7 @@ if (sort === "newest") {
 } else if (sort === "za") {
   sortOption = { name: -1 };
 }
-  const students = await Student.find()
+  const students = await Student.find(filter)
   .populate("createdBy", "name email role")
   .sort(sortOption)
   .skip(skip)
@@ -155,36 +178,5 @@ exports.deleteStudent = async (req, res) => {
   }
 };
 
-exports.searchStudents = async (req, res) => {
-  try {
-    const { name, department, year } = req.query;
 
-    const filter = {};
-
-    if (name) {
-      filter.name = {
-        $regex: name,
-        $options: "i",
-      };
-    }
-
-    if (department) {
-      filter.department = department;
-    }
-
-    if (year) {
-      filter.year = Number(year);
-    }
-
-    const students = await Student.find(filter);
-
-    return res.status(200).json({
-      students,
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
+    
