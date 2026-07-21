@@ -12,7 +12,7 @@ const eventRoutes = require("./routes/eventRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
-
+const attendanceRoutes = require('./routes/attendanceRoutes');
 connectDB();
 
 const app = express();
@@ -29,6 +29,7 @@ app.use("/api/events", eventRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'CampusHub API is running' });
