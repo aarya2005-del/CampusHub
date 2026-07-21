@@ -7,7 +7,13 @@ const {
   login,
 } = require('../controllers/authController');
 
+// Import rate limiter
+const { loginLimiter } = require('../middleware/rateLimiter');
+
+// Register
 router.post('/register', register);
-router.post('/login', login);
+
+// Login with rate limiting
+router.post('/login', loginLimiter, login);
 
 module.exports = router;
