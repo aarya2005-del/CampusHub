@@ -1,19 +1,30 @@
 const express = require('express');
-
 const router = express.Router();
 
-const {
-  register,
-  login,
-} = require('../controllers/authController');
+const { register, login } = require('../controllers/authController');
 
-// Import rate limiter
-const { loginLimiter } = require('../middleware/rateLimiter');
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.post('/login', login);
 
-// Register
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register user
+ *     tags: [Authentication]
+ *     responses:
+ *       201:
+ *         description: Created
+ */
 router.post('/register', register);
-
-// Login with rate limiting
-router.post('/login', loginLimiter, login);
 
 module.exports = router;
