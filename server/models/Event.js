@@ -20,6 +20,11 @@ const eventSchema = new mongoose.Schema(
       trim: true,
     },
 
+    capacity: {
+  type: Number,
+  default: 100,
+},
+
     eventDate: {
       type: Date,
       required: true,
