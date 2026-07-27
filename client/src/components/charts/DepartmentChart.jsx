@@ -1,58 +1,73 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 const data = [
-  { name: 'Computer Science', value: 45 },
-  { name: 'Electronics', value: 25 },
-  { name: 'Mechanical', value: 18 },
-  { name: 'Civil', value: 12 },
-]
+  { name: "Computer Science", value: 420 },
+  { name: "Information Technology", value: 280 },
+  { name: "Electronics", value: 210 },
+  { name: "Mechanical", value: 170 },
+];
 
-const COLORS = ['#3B82F6', '#8B5CF6', '#06B6D4', '#10B981']
+const COLORS = [
+  "#3B82F6",
+  "#8B5CF6",
+  "#10B981",
+  "#F59E0B",
+];
 
 function DepartmentChart() {
   return (
-    <div className='h-80'>
-      <ResponsiveContainer width='100%' height='100%'>
+    <div className="h-[380px]">
+      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={data}
-            cx='50%'
-            cy='50%'
-            innerRadius={70}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="45%"
+            innerRadius={65}
             outerRadius={110}
             paddingAngle={4}
-            dataKey='value'
+            label={({ percent }) =>
+              `${(percent * 100).toFixed(0)}%`
+            }
           >
             {data.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              <Cell
+                key={entry.name}
+                fill={COLORS[index]}
+              />
             ))}
           </Pie>
 
           <Tooltip
             contentStyle={{
-              backgroundColor: '#0F172A',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '16px',
-              color: '#fff',
+              background: "#0f172a",
+              border: "1px solid #334155",
+              borderRadius: "12px",
+              color: "#fff",
+            }}
+          />
+
+          <Legend
+            verticalAlign="bottom"
+            iconType="circle"
+            wrapperStyle={{
+              color: "#fff",
+              paddingTop: "20px",
             }}
           />
         </PieChart>
       </ResponsiveContainer>
-
-      {/* Legend */}
-      <div className='grid grid-cols-2 gap-3 mt-4'>
-        {data.map((item, index) => (
-          <div key={item.name} className='flex items-center gap-2'>
-            <div
-              className='w-3 h-3 rounded-full'
-              style={{ backgroundColor: COLORS[index] }}
-            />
-            <span className='text-sm text-slate-300'>{item.name}</span>
-          </div>
-        ))}
-      </div>
     </div>
-  )
+  );
 }
 
-export default DepartmentChart
+export default DepartmentChart;

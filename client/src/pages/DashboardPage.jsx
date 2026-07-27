@@ -1,376 +1,667 @@
-import { useEffect, useState } from 'react'
 import {
   Users,
-  Calendar,
-  TrendingUp,
+  CalendarDays,
   ClipboardCheck,
+  TrendingUp,
   ArrowUpRight,
-  Clock,
-  MapPin,
-} from 'lucide-react'
+  Plus,
+  UserPlus,
+  CalendarPlus,
+  FileText,
+} from "lucide-react";
 
-import DashboardLayout from '../layouts/DashboardLayout'
-import api from '../services/api'
+import StudentChart from "../components/charts/StudentChart";
+import AttendanceTrendChart from "../components/charts/AttendanceTrendChart";
+import DepartmentChart from "../components/charts/DepartmentChart";
+import EventParticipationChart from "../components/charts/EventParticipationChart";
+import ProgressRing from "../components/charts/ProgressRing";
+import { Link } from "react-router-dom";
 
-// Charts
-import DepartmentChart from '../components/charts/DepartmentChart'
-import AttendanceTrendChart from '../components/charts/AttendanceTrendChart'
-import EventParticipationChart from '../components/charts/EventParticipationChart'
-import ProgressRing from '../components/charts/ProgressRing'
-
-// ================= STAT CARD =================
-function StatCard({ title, value, icon: Icon, gradient, change }) {
-  return (
-    <div className='group relative overflow-hidden rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 hover:border-white/20 transition-all duration-300 hover:scale-[1.02]'>
-      <div
-        className={`absolute inset-0 opacity-10 bg-gradient-to-br ${gradient}`}
-      />
-
-      <div className='relative flex items-start justify-between mb-4'>
-        <div className='p-3 rounded-2xl bg-white/10'>
-          <Icon size={24} className='text-white' />
-        </div>
-
-        <div className='flex items-center gap-1 text-green-400 text-sm font-semibold'>
-          <ArrowUpRight size={16} />
-          {change}
-        </div>
-      </div>
-
-      <div className='relative'>
-        <p className='text-slate-400 text-sm font-medium'>{title}</p>
-        <h3 className='text-4xl font-black mt-2 tracking-tight'>{value}</h3>
-      </div>
-    </div>
-  )
-}
-
-// ================= DASHBOARD PAGE =================
 function DashboardPage() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalEvents: 0,
-    totalNotices: 0,
-    upcomingEvents: 0,
-  })
-
-  const [loading, setLoading] = useState(true)
-
-  // Fetch dashboard stats
-  useEffect(() => {
-    fetchDashboardStats()
-  }, [])
-
-  const fetchDashboardStats = async () => {
-    try {
-      const response = await api.get('/dashboard/stats')
-
-      console.log('Dashboard API Response:', response.data)
-
-      // Handle both response formats safely
-      const dashboardData = response.data.data || response.data
-
-      setStats({
-        totalStudents: dashboardData.totalStudents || 0,
-        totalEvents: dashboardData.totalEvents || 0,
-        totalNotices: dashboardData.totalNotices || 0,
-        upcomingEvents: dashboardData.upcomingEvents || 0,
-      })
-    } catch (error) {
-      console.error('Failed to fetch dashboard stats:', error)
-
-      // Prevent crash by setting fallback values
-      setStats({
-        totalStudents: 0,
-        totalEvents: 0,
-        totalNotices: 0,
-        upcomingEvents: 0,
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Mock data
-  const upcomingEvents = [
+  const stats = [
     {
-      title: 'Tech Fest 2026',
-      date: 'Tomorrow • 10:00 AM',
-      location: 'Main Auditorium',
+      title: "Students",
+      value: "1,248",
+      change: "+12%",
+      color: "from-blue-500/20 to-cyan-500/20",
+      icon: <Users size={28} />,
     },
     {
-      title: 'AI Workshop',
-      date: 'Friday • 2:00 PM',
-      location: 'Computer Lab',
+      title: "Events",
+      value: "24",
+      change: "+8%",
+      color: "from-purple-500/20 to-pink-500/20",
+      icon: <CalendarDays size={28} />,
     },
-  ]
-
-  const recentActivities = [
-    'New student registration completed',
-    'Attendance marked for Computer Science',
-    'Sports Day event registration updated',
-    'Notice published for semester exams',
-  ]
+    {
+      title: "Attendance",
+      value: "96%",
+      change: "+3%",
+      color: "from-green-500/20 to-emerald-500/20",
+      icon: <ClipboardCheck size={28} />,
+    },
+    {
+      title: "Growth",
+      value: "15%",
+      change: "+5%",
+      color: "from-orange-500/20 to-red-500/20",
+      icon: <TrendingUp size={28} />,
+    },
+  ];
 
   return (
-    <DashboardLayout>
-      {/* ================= WELCOME SECTION ================= */}
-      <div className='mb-10'>
-        <div className='flex items-center justify-between flex-wrap gap-4'>
-          <div>
-            <h1 className='text-5xl font-black tracking-tight mb-3'>
-              Welcome back, {user?.name || 'Admin'}! 👋
-            </h1>
+    <div className="space-y-8">
 
-            <p className='text-slate-400 text-lg'>
-              Here’s what’s happening in your campus today.
+      {/* Hero Section */}
+
+      <div className="flex items-center justify-between flex-wrap gap-6">
+
+        <div>
+
+          <h1 className="text-5xl font-black text-white">
+            Welcome back,
+            <span className="text-blue-400">
+              {" "}
+              {user?.name || "Admin"}
+            </span>
+            👋
+          </h1>
+
+          <p className="text-slate-400 mt-3 text-lg">
+            Here's what's happening in your campus today.
+          </p>
+
+        </div>
+
+        <div className="text-right">
+
+          <p className="text-slate-400">
+            Today
+          </p>
+
+          <h2 className="text-3xl font-bold text-white">
+            Thursday, July 24
+          </h2>
+
+        </div>
+
+      </div>
+
+      {/* Quick Actions */}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+        <Link
+  to="/students"
+  className="block bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl p-6 text-left hover:scale-105 transition"
+>
+          <Plus size={34} />
+
+          <h3 className="mt-5 text-2xl font-bold">
+            Add Student
+          </h3>
+
+          <p className="text-blue-100 mt-2">
+            Register a new student
+          </p>
+
+        </Link>
+
+        <Link
+  to="/events"
+  className="block bg-gradient-to-r from-purple-600 to-pink-500 rounded-3xl p-6 text-left hover:scale-105 transition"
+>
+          <CalendarPlus size={34} />
+
+          <h3 className="mt-5 text-2xl font-bold">
+            Create Event
+          </h3>
+
+          <p className="text-purple-100 mt-2">
+            Schedule campus events
+          </p>
+
+        </Link>
+
+        <Link
+  to="/notices"
+  className="block bg-gradient-to-r from-emerald-600 to-green-500 rounded-3xl p-6 text-left hover:scale-105 transition"
+>
+          <FileText size={34} />
+
+          <h3 className="mt-5 text-2xl font-bold">
+            Publish Notice
+          </h3>
+
+          <p className="text-green-100 mt-2">
+            Send announcements instantly
+          </p>
+
+        </Link>
+
+      </div>
+
+      {/* Stats */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+
+        {stats.map((card) => (
+
+          <div
+            key={card.title}
+            className={`rounded-3xl p-6 border border-white/10 bg-gradient-to-br ${card.color}`}
+          >
+
+            <div className="flex justify-between">
+
+              <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
+
+                {card.icon}
+
+              </div>
+
+              <div className="flex items-center text-green-400 font-bold">
+
+                <ArrowUpRight size={18} />
+
+                {card.change}
+
+              </div>
+
+            </div>
+
+            <p className="mt-8 text-slate-400">
+
+              {card.title}
+
             </p>
+
+            <h2 className="text-5xl font-black mt-2">
+
+              {card.value}
+
+            </h2>
+
           </div>
 
-          <div className='text-right'>
-            <p className='text-slate-400 text-sm'>Today</p>
+        ))}
 
-            <p className='text-2xl font-bold'>
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-          </div>
-        </div>
       </div>
+      <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+  <h2 className="text-2xl font-bold text-white mb-6">
+    Student Admissions
+  </h2>
 
-      {/* ================= STATS GRID ================= */}
-      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8'>
-        <StatCard
-          title='Total Students'
-          value={loading ? '...' : stats.totalStudents}
-          icon={Users}
-          gradient='from-blue-500 to-cyan-500'
-          change='+12%'
-        />
+  <StudentChart />
+</div>
+            {/* Analytics Section */}
 
-        <StatCard
-          title='Active Events'
-          value={loading ? '...' : stats.totalEvents}
-          icon={Calendar}
-          gradient='from-purple-500 to-pink-500'
-          change='+8%'
-        />
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        <StatCard
-          title='Attendance Rate'
-          value='96%'
-          icon={ClipboardCheck}
-          gradient='from-green-500 to-emerald-500'
-          change='+3%'
-        />
-
-        <StatCard
-          title='Upcoming Events'
-          value={loading ? '...' : stats.upcomingEvents}
-          icon={TrendingUp}
-          gradient='from-orange-500 to-red-500'
-          change='+15%'
-        />
-      </div>
-
-      {/* ================= MAIN CONTENT ================= */}
-      <div className='grid grid-cols-1 xl:grid-cols-3 gap-8'>
-        {/* Analytics Section */}
-        <div className='xl:col-span-2 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-8'>
-          <div className='flex items-center justify-between mb-8'>
-            <div>
-              <h2 className='text-2xl font-bold mb-1'>Campus Analytics</h2>
-              <p className='text-slate-400'>
-                Live overview of campus operations
-              </p>
-            </div>
-
-            <button className='px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold'>
-              View Details
-            </button>
-          </div>
-
-          {/* Charts Grid */}
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-            {/* Attendance Trend */}
-            <div className='rounded-2xl bg-white/5 border border-white/10 p-5'>
-              <div className='flex items-center justify-between mb-4'>
-                <div>
-                  <h3 className='text-lg font-bold'>Attendance Trend</h3>
-                  <p className='text-slate-400 text-sm'>Last 6 months</p>
-                </div>
-
-                <div className='px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-sm font-semibold'>
-                  +8.2%
-                </div>
-              </div>
-
-              <AttendanceTrendChart />
-            </div>
-
-            {/* Progress Ring */}
-            <div className='rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-white/10 p-5 flex flex-col items-center justify-center'>
-              <h3 className='text-lg font-bold mb-6'>
-                Campus Goals Progress
-              </h3>
-
-              <ProgressRing progress={78} />
-
-              <div className='mt-6 w-full space-y-3'>
-                <div className='flex justify-between text-sm'>
-                  <span className='text-slate-300'>Student Engagement</span>
-                  <span className='text-white font-semibold'>82%</span>
-                </div>
-
-                <div className='w-full h-2 rounded-full bg-white/10 overflow-hidden'>
-                  <div className='h-full w-[82%] bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full' />
-                </div>
-
-                <div className='flex justify-between text-sm'>
-                  <span className='text-slate-300'>Event Participation</span>
-                  <span className='text-white font-semibold'>74%</span>
-                </div>
-
-                <div className='w-full h-2 rounded-full bg-white/10 overflow-hidden'>
-                  <div className='h-full w-[74%] bg-gradient-to-r from-purple-500 to-pink-500 rounded-full' />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Upcoming Events */}
-        <div className='rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6'>
-          <div className='flex items-center justify-between mb-6'>
-            <h2 className='text-2xl font-bold'>Upcoming Events</h2>
-
-            <button className='text-blue-400 hover:text-blue-300 text-sm font-semibold'>
-              See all
-            </button>
-          </div>
-
-          <div className='space-y-4'>
-            {upcomingEvents.map((event, index) => (
-              <div
-                key={index}
-                className='p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all'
-              >
-                <div className='flex items-start gap-3'>
-                  <div className='p-2 rounded-xl bg-blue-500/20'>
-                    <Calendar size={18} className='text-blue-400' />
-                  </div>
-
-                  <div className='flex-1 min-w-0'>
-                    <h3 className='font-semibold text-white mb-2'>
-                      {event.title}
-                    </h3>
-
-                    <div className='space-y-1 text-sm text-slate-400'>
-                      <div className='flex items-center gap-2'>
-                        <Clock size={14} />
-                        {event.date}
-                      </div>
-
-                      <div className='flex items-center gap-2'>
-                        <MapPin size={14} />
-                        {event.location}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ================= RECENT ACTIVITY + QUICK ACTIONS ================= */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8'>
-        {/* Recent Activity */}
-        <div className='rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6'>
-          <div className='flex items-center justify-between mb-6'>
-            <h2 className='text-2xl font-bold'>Recent Activity</h2>
-            <div className='w-2 h-2 bg-green-400 rounded-full animate-pulse' />
-          </div>
-
-          <div className='space-y-4'>
-            {recentActivities.map((activity, index) => (
-              <div key={index} className='flex items-start gap-3'>
-                <div className='w-3 h-3 rounded-full bg-blue-400 mt-1.5 flex-shrink-0' />
-
-                <div>
-                  <p className='text-white font-medium'>{activity}</p>
-
-                  <p className='text-slate-400 text-sm mt-1'>
-                    {index + 1} hour{index !== 0 ? 's' : ''} ago
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className='rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6'>
-          <h2 className='text-2xl font-bold mb-6'>Quick Actions</h2>
-
-          <div className='grid grid-cols-2 gap-4'>
-            <button className='p-5 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/20 hover:border-blue-400/40 transition-all text-left'>
-              <Users size={24} className='text-blue-400 mb-3' />
-              <p className='font-semibold'>Add Student</p>
-            </button>
-
-            <button className='p-5 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 hover:border-purple-400/40 transition-all text-left'>
-              <Calendar size={24} className='text-purple-400 mb-3' />
-              <p className='font-semibold'>Create Event</p>
-            </button>
-
-            <button className='p-5 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/20 hover:border-green-400/40 transition-all text-left'>
-              <ClipboardCheck size={24} className='text-green-400 mb-3' />
-              <p className='font-semibold'>Mark Attendance</p>
-            </button>
-
-            <button className='p-5 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/20 hover:border-orange-400/40 transition-all text-left'>
-              <TrendingUp size={24} className='text-orange-400 mb-3' />
-              <p className='font-semibold'>View Reports</p>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= FINAL ANALYTICS ROW ================= */}
-      <div className='grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8'>
         {/* Department Distribution */}
-        <div className='rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6'>
-          <div className='mb-6'>
-            <h2 className='text-2xl font-bold'>Department Distribution</h2>
-            <p className='text-slate-400 text-sm mt-1'>
-              Student distribution across departments
-            </p>
+
+        <div className="xl:col-span-2 rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <div>
+
+              <h2 className="text-2xl font-bold text-white">
+                Campus Analytics
+              </h2>
+
+              <p className="text-slate-400">
+                Department-wise student distribution
+              </p>
+
+            </div>
+
+            <Link
+  to="/analytics"
+  className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-xl transition"
+>
+  View Report
+</Link>
+             
           </div>
 
           <DepartmentChart />
+
         </div>
 
-        {/* Event Participation */}
-        <div className='rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 p-6'>
-          <div className='mb-6'>
-            <h2 className='text-2xl font-bold'>Event Participation</h2>
-            <p className='text-slate-400 text-sm mt-1'>
-              Most active campus events
-            </p>
+        {/* Attendance Progress */}
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <h2 className="text-2xl font-bold">
+            Attendance
+          </h2>
+
+          <p className="text-slate-400 mb-6">
+            Current semester
+          </p>
+
+          <div className="flex justify-center">
+
+           <ProgressRing
+  value={96}
+  title="Overall Attendance"
+/>
+
           </div>
 
-          <EventParticipationChart />
+          <div className="mt-8 space-y-4">
+
+            <div>
+
+              <div className="flex justify-between text-sm mb-2">
+
+                <span className="text-slate-400">
+                  Present
+                </span>
+
+                <span>
+                  96%
+                </span>
+
+              </div>
+
+              <div className="h-3 rounded-full bg-slate-800">
+
+                <div className="h-3 rounded-full bg-green-500 w-[96%]" />
+
+              </div>
+
+            </div>
+
+            <div>
+
+              <div className="flex justify-between text-sm mb-2">
+
+                <span className="text-slate-400">
+                  Absent
+                </span>
+
+                <span>
+                  4%
+                </span>
+
+              </div>
+
+              <div className="h-3 rounded-full bg-slate-800">
+
+                <div className="h-3 rounded-full bg-red-500 w-[4%]" />
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
+
       </div>
-    </DashboardLayout>
-  )
+
+      {/* Bottom Charts */}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <h2 className="text-2xl font-bold">
+            Attendance Trend
+          </h2>
+
+          <p className="text-slate-400 mb-6">
+            Last 6 months
+          </p>
+
+          <AttendanceTrendChart />
+
+        </div>
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <h2 className="text-2xl font-bold">
+            Event Participation
+          </h2>
+
+          <p className="text-slate-400 mb-6">
+            Campus engagement
+          </p>
+
+          <EventParticipationChart />
+
+        </div>
+
+      </div>
+            {/* Bottom Section */}
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        {/* Upcoming Events */}
+
+        <div className="xl:col-span-1 rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <h2 className="text-2xl font-bold">
+              Upcoming Events
+            </h2>
+
+            <button className="text-blue-400 hover:text-blue-300">
+              View All
+            </button>
+
+          </div>
+
+          <div className="space-y-4">
+
+            {[
+              {
+                title: "Tech Fest 2026",
+                date: "Tomorrow • 10:00 AM",
+                place: "Main Auditorium",
+              },
+              {
+                title: "AI Workshop",
+                date: "Friday • 2:00 PM",
+                place: "Computer Lab",
+              },
+              {
+                title: "Hackathon",
+                date: "Monday • 9:00 AM",
+                place: "Innovation Center",
+              },
+            ].map((event) => (
+
+              <div
+                key={event.title}
+                className="bg-slate-800/60 rounded-2xl p-4 hover:bg-slate-800 transition"
+              >
+
+                <h3 className="font-semibold text-lg">
+                  {event.title}
+                </h3>
+
+                <p className="text-slate-400 text-sm mt-2">
+                  {event.date}
+                </p>
+
+                <p className="text-slate-500 text-sm">
+                  {event.place}
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* Recent Students */}
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <h2 className="text-2xl font-bold">
+              Recent Students
+            </h2>
+
+            <button className="text-blue-400">
+              View All
+            </button>
+
+          </div>
+
+          <div className="space-y-5">
+
+            {[
+              "Aarav Sharma",
+              "Priya Patel",
+              "Rohan Verma",
+              "Neha Singh",
+            ].map((student, index) => (
+
+              <div
+                key={student}
+                className="flex items-center gap-4"
+              >
+
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center font-bold">
+
+                  {student.charAt(0)}
+
+                </div>
+
+                <div className="flex-1">
+
+                  <h3 className="font-semibold">
+                    {student}
+                  </h3>
+
+                  <p className="text-slate-400 text-sm">
+                    Computer Science
+                  </p>
+
+                </div>
+
+                <span className="text-green-400 text-sm">
+                  Active
+                </span>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* Notices */}
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <h2 className="text-2xl font-bold">
+              Latest Notices
+            </h2>
+
+            <button className="text-blue-400">
+              View All
+            </button>
+
+          </div>
+
+          <div className="space-y-5">
+
+            <div className="border-l-4 border-blue-500 pl-4">
+
+              <h3 className="font-semibold">
+                Semester Registration
+              </h3>
+
+              <p className="text-slate-400 text-sm mt-1">
+                Registration closes on July 30.
+              </p>
+
+            </div>
+
+            <div className="border-l-4 border-green-500 pl-4">
+
+              <h3 className="font-semibold">
+                Placement Drive
+              </h3>
+
+              <p className="text-slate-400 text-sm mt-1">
+                Infosys and TCS arriving next week.
+              </p>
+
+            </div>
+
+            <div className="border-l-4 border-yellow-500 pl-4">
+
+              <h3 className="font-semibold">
+                Library Notice
+              </h3>
+
+              <p className="text-slate-400 text-sm mt-1">
+                Library timings extended until 10 PM.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+            {/* Activity Feed & Performance */}
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+        {/* Recent Activity */}
+
+        <div className="rounded-3xl bg-white/5 border border-white/10 p-6">
+
+          <h2 className="text-2xl font-bold mb-6">
+            Recent Activity
+          </h2>
+
+          <div className="space-y-5">
+
+            {[
+              {
+                title: "New student registered",
+                desc: "Aarav Sharma joined Computer Science.",
+                time: "5 mins ago",
+              },
+              {
+                title: "Attendance marked",
+                desc: "Faculty updated attendance for Semester 5.",
+                time: "20 mins ago",
+              },
+              {
+                title: "Event created",
+                desc: "AI Workshop has been scheduled.",
+                time: "1 hour ago",
+              },
+              {
+                title: "Notice published",
+                desc: "Placement drive notice is now live.",
+                time: "3 hours ago",
+              },
+            ].map((item) => (
+
+              <div
+                key={item.title}
+                className="flex gap-4 items-start"
+              >
+
+                <div className="w-3 h-3 rounded-full bg-blue-500 mt-2"></div>
+
+                <div>
+
+                  <h3 className="font-semibold">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-slate-400 text-sm mt-1">
+                    {item.desc}
+                  </p>
+
+                  <p className="text-slate-500 text-xs mt-2">
+                    {item.time}
+                  </p>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* Performance Summary */}
+
+        <div className="rounded-3xl bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/10 p-6">
+
+          <h2 className="text-2xl font-bold mb-6">
+            Campus Performance
+          </h2>
+
+          <div className="space-y-6">
+
+            <div>
+
+              <div className="flex justify-between mb-2">
+
+                <span>Student Satisfaction</span>
+
+                <span>94%</span>
+
+              </div>
+
+              <div className="w-full h-3 rounded-full bg-slate-800">
+
+                <div className="w-[94%] h-3 rounded-full bg-blue-500"></div>
+
+              </div>
+
+            </div>
+
+            <div>
+
+              <div className="flex justify-between mb-2">
+
+                <span>Event Success</span>
+
+                <span>88%</span>
+
+              </div>
+
+              <div className="w-full h-3 rounded-full bg-slate-800">
+
+                <div className="w-[88%] h-3 rounded-full bg-green-500"></div>
+
+              </div>
+
+            </div>
+
+            <div>
+
+              <div className="flex justify-between mb-2">
+
+                <span>Attendance Rate</span>
+
+                <span>96%</span>
+
+              </div>
+
+              <div className="w-full h-3 rounded-full bg-slate-800">
+
+                <div className="w-[96%] h-3 rounded-full bg-purple-500"></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+     
+
+    </div>
+  );
 }
 
-export default DashboardPage
+export default DashboardPage;
