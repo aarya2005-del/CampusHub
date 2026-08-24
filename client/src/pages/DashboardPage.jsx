@@ -49,7 +49,48 @@ function DashboardPage() {
     icon: <TrendingUp size={28} />,
   },
 ];
-
+const activities = [
+  {
+    id: 1,
+    type: "student",
+    color: "bg-green-500",
+    message: (
+      <>
+        Student <b>John Doe</b> registered.
+      </>
+    ),
+    time: "5 mins ago",
+  },
+  {
+    id: 2,
+    type: "event",
+    color: "bg-blue-500",
+    message: (
+      <>
+        New event <b>Hackathon 2026</b> created.
+      </>
+    ),
+    time: "20 mins ago",
+  },
+  {
+    id: 3,
+    type: "attendance",
+    color: "bg-purple-500",
+    message: <>Attendance updated for Semester 5.</>,
+    time: "1 hour ago",
+  },
+  {
+    id: 4,
+    type: "notice",
+    color: "bg-orange-500",
+    message: (
+      <>
+        Notice <b>Exam Schedule</b> published.
+      </>
+    ),
+    time: "Today",
+  },
+];
   return (
     <div className="space-y-8">
 
@@ -267,93 +308,38 @@ function DashboardPage() {
 
 <div className="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-xl">
 
-  <h2 className="text-2xl font-bold mb-6">
-
+  <h2 className="text-2xl font-bold mb-6 text-white">
     Recent Activity
-
   </h2>
 
   <div className="space-y-5">
 
-    <div className="flex items-center justify-between">
+   {activities.map((activity) => (
 
-      <div className="flex items-center gap-4">
+      <div
+       key={activity.id}
+        className="flex items-center justify-between gap-4"
+      >
 
-        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <div className="flex items-center gap-4">
 
-        <span>
-          Student <b>John Doe</b> registered.
+          <div
+            className={`w-3 h-3 rounded-full ${activity.color}`}
+          />
+
+          <span className="text-slate-300">
+           {activity.message}
+          </span>
+
+        </div>
+
+        <span className="text-slate-500 text-sm whitespace-nowrap">
+          {activity.time}
         </span>
 
       </div>
 
-      <span className="text-slate-500 text-sm">
-
-        5 mins ago
-
-      </span>
-
-    </div>
-
-    <div className="flex items-center justify-between">
-
-      <div className="flex items-center gap-4">
-
-        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-
-        <span>
-          New event <b>Hackathon 2026</b> created.
-        </span>
-
-      </div>
-
-      <span className="text-slate-500 text-sm">
-
-        20 mins ago
-
-      </span>
-
-    </div>
-
-    <div className="flex items-center justify-between">
-
-      <div className="flex items-center gap-4">
-
-        <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-
-        <span>
-          Attendance updated for Semester 5.
-        </span>
-
-      </div>
-
-      <span className="text-slate-500 text-sm">
-
-        1 hour ago
-
-      </span>
-
-    </div>
-
-    <div className="flex items-center justify-between">
-
-      <div className="flex items-center gap-4">
-
-        <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-
-        <span>
-          Notice <b>Exam Schedule</b> published.
-        </span>
-
-      </div>
-
-      <span className="text-slate-500 text-sm">
-
-        Today
-
-      </span>
-
-    </div>
+    ))}
 
   </div>
 
