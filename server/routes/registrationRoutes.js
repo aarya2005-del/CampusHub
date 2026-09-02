@@ -8,6 +8,7 @@ const {
   registerForEvent,
   getMyRegisteredEvents,
   getEventAnalytics,
+  getAllEventAnalytics,
 } = require('../controllers/registrationController');
 // Register for an event
 router.post(
@@ -24,8 +25,13 @@ router.get(
   getMyRegisteredEvents
 );
 
-
+router.get(
+  '/analytics',
+  authMiddleware,
+  getAllEventAnalytics
+);
 // Get event participation analytics
+
 router.get(
   '/analytics/:eventId',
   authMiddleware,

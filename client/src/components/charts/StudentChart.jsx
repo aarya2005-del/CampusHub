@@ -8,25 +8,16 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { month: "Jan", students: 820 },
-  { month: "Feb", students: 910 },
-  { month: "Mar", students: 980 },
-  { month: "Apr", students: 1050 },
-  { month: "May", students: 1150 },
-  { month: "Jun", students: 1248 },
-];
-
-function StudentChart() {
+function StudentChart({ data = [] }) {
   return (
     <div className="bg-slate-900 rounded-3xl p-6 h-[380px]">
 
       <h2 className="text-2xl font-bold text-white mb-2">
-        Student Admissions
+        Students by Year
       </h2>
 
       <p className="text-slate-400 mb-6">
-        Growth of enrolled students over the last 6 months
+        Distribution of students across academic years
       </p>
 
       <ResponsiveContainer width="100%" height="80%">
@@ -65,7 +56,7 @@ function StudentChart() {
           />
 
           <XAxis
-            dataKey="month"
+            dataKey="year"
             stroke="#94a3b8"
           />
 

@@ -8,16 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const data = [
-  { month: "Jan", attendance: 90 },
-  { month: "Feb", attendance: 92 },
-  { month: "Mar", attendance: 95 },
-  { month: "Apr", attendance: 93 },
-  { month: "May", attendance: 96 },
-  { month: "Jun", attendance: 98 },
-];
-
-function AttendanceTrendChart() {
+function AttendanceTrendChart({ data = [] }) {
   return (
     <div className="bg-slate-900 rounded-3xl p-6 h-[380px]">
       <h2 className="text-2xl font-bold text-white mb-2">
@@ -25,7 +16,7 @@ function AttendanceTrendChart() {
       </h2>
 
       <p className="text-slate-400 mb-6">
-        Attendance over the last 6 months
+        Monthly attendance percentage
       </p>
 
       <ResponsiveContainer width="100%" height="80%">
@@ -42,10 +33,12 @@ function AttendanceTrendChart() {
 
           <YAxis
             stroke="#94a3b8"
-            domain={[85, 100]}
+            domain={[0, 100]}
+            tickFormatter={(value) => `${value}%`}
           />
 
           <Tooltip
+            formatter={(value) => [`${value}%`, "Attendance"]}
             contentStyle={{
               background: "#0f172a",
               border: "1px solid #334155",
@@ -57,6 +50,7 @@ function AttendanceTrendChart() {
           <Line
             type="monotone"
             dataKey="attendance"
+            name="Attendance"
             stroke="#10B981"
             strokeWidth={4}
             dot={{

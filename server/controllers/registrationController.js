@@ -163,3 +163,39 @@ exports.getEventAnalytics = async (req, res) => {
     });
   }
 };
+// ================= ALL EVENT PARTICIPATION ANALYTICS =================
+exports.getAllEventAnalytics = async (req, res) => {
+  try {
+    const events = await Event.find()
+      .select('title capacity eventDate')
+      .sort({ eventDate: -1 });
+
+    const stats = await Promise.all(
+      events.map(async (event) => {
+        const totalParticipants =
+          await EventRegistration.countDocuments({
+            event: event._id,
+          });
+
+        return {
+          eventId: event._id,
+          event: event.title,
+          students: totalParticipants,
+          capacity: event.capacity,
+          eventDate: event.eventDate,
+        };
+      })
+    );
+
+    return res.status(200).json({
+      success: true,
+      stats,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

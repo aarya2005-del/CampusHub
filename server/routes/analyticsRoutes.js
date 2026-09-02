@@ -8,8 +8,9 @@ const {
   getStudentsByDepartment,
   getStudentsByYear,
   getEventsPerMonth,
+  getOverallAttendance,
+  getAttendanceTrend,
 } = require('../controllers/analyticsController');
-
 // Students by Department
 router.get(
   '/students-by-department',
@@ -33,5 +34,17 @@ router.get(
   adminMiddleware,
   getEventsPerMonth
 );
-
+// Overall Attendance
+router.get(
+  '/attendance',
+  authMiddleware,
+  adminMiddleware,
+  getOverallAttendance
+);
+router.get(
+  '/attendance-trend',
+  authMiddleware,
+  adminMiddleware,
+  getAttendanceTrend
+);
 module.exports = router;

@@ -9,14 +9,6 @@ import {
   Cell,
 } from "recharts";
 
-const data = [
-  { event: "Tech Fest", students: 420 },
-  { event: "Hackathon", students: 310 },
-  { event: "Sports", students: 380 },
-  { event: "Workshop", students: 260 },
-  { event: "Cultural", students: 470 },
-];
-
 const colors = [
   "#3B82F6",
   "#8B5CF6",
@@ -25,7 +17,7 @@ const colors = [
   "#EC4899",
 ];
 
-function EventParticipationChart() {
+function EventParticipationChart({ data = [] }) {
   return (
     <div className="bg-slate-900 rounded-3xl p-6 h-[380px]">
       <h2 className="text-2xl font-bold text-white mb-2">
@@ -33,7 +25,7 @@ function EventParticipationChart() {
       </h2>
 
       <p className="text-slate-400 mb-6">
-        Students participating in campus events
+        Registered students across campus events
       </p>
 
       <ResponsiveContainer width="100%" height="80%">
@@ -50,6 +42,7 @@ function EventParticipationChart() {
 
           <YAxis
             stroke="#94a3b8"
+            allowDecimals={false}
           />
 
           <Tooltip
@@ -63,12 +56,13 @@ function EventParticipationChart() {
 
           <Bar
             dataKey="students"
+            name="Registered Students"
             radius={[10, 10, 0, 0]}
           >
             {data.map((entry, index) => (
               <Cell
-                key={entry.event}
-                fill={colors[index]}
+                key={entry.eventId}
+                fill={colors[index % colors.length]}
               />
             ))}
           </Bar>
