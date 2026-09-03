@@ -32,15 +32,27 @@ exports.markAttendance = async (req, res) => {
       });
     }
 
-    // Create attendance
-    const attendance = await Attendance.create({
-      student: studentId,
-      date: new Date(date),
-      status,
-      markedBy: req.user.id,
-    });
+    // Create or update attendance
+const attendanceDate = new Date(date);
+attendanceDate.setHours(0, 0, 0, 0);
 
-    return res.status(201).json({
+const attendance = await Attendance.findOneAndUpdate(
+  {
+    student: studentId,
+    date: attendanceDate,
+  },
+  {
+    status,
+    markedBy: req.user.id,
+  },
+  {
+    new: true,
+    upsert: true,
+    runValidators: true,
+  }
+);
+
+    return res.status(200).json({
       success: true,
       message: 'Attendance marked successfully',
       data: { attendance },
@@ -164,6 +176,49 @@ exports.getAttendanceAnalytics = async (req, res) => {
       },
     });
 
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// ================= GET ATTENDANCE BY DATE =================
+exports.getAttendanceByDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({
+        success: false,
+        message: "Date is required",
+      });
+    }
+
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);
+
+    const attendance = await Attendance.find({
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    })
+      .populate(
+        "student",
+        "name rollNumber department year"
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        attendance,
+      },
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,

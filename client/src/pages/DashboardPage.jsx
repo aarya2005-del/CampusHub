@@ -1,7 +1,3 @@
-import {
-  ArrowUpRight,
-} from "lucide-react";
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -201,35 +197,31 @@ useEffect(() => {
   // ==============================
 
   const stats = [
-    {
-      title: "Students",
-      value: dashboardData?.totalStudents ?? 0,
-      change: "+12%",
-      color: "from-blue-500/20 to-cyan-500/20",
-      icon: "👨‍🎓",
-    },
-    {
-      title: "Events",
-      value: dashboardData?.totalEvents ?? 0,
-      change: "+8%",
-      color: "from-purple-500/20 to-pink-500/20",
-      icon: "📅",
-    },
-    {
-      title: "Attendance",
-      value: `${attendanceData?.attendancePercentage ?? 0}%`,
-      change: "+3%",
-      color: "from-green-500/20 to-emerald-500/20",
-      icon: "✅",
-    },
-    {
-      title: "Growth",
-      value: "15%",
-      change: "+5%",
-      color: "from-orange-500/20 to-red-500/20",
-      icon: "📈",
-    },
-  ];
+  {
+    title: "Students",
+    value: dashboardData?.totalStudents ?? 0,
+    color: "from-blue-500/20 to-cyan-500/20",
+    icon: "👨‍🎓",
+  },
+  {
+    title: "Events",
+    value: dashboardData?.totalEvents ?? 0,
+    color: "from-purple-500/20 to-pink-500/20",
+    icon: "📅",
+  },
+  {
+    title: "Attendance",
+    value: `${attendanceData?.attendancePercentage ?? 0}%`,
+    color: "from-green-500/20 to-emerald-500/20",
+    icon: "✅",
+  },
+  {
+    title: "Notices",
+    value: dashboardData?.totalNotices ?? 0,
+    color: "from-orange-500/20 to-red-500/20",
+    icon: "📢",
+  },
+];
 
   return (
     <div className="space-y-8">
@@ -389,14 +381,6 @@ useEffect(() => {
 
               <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white text-3xl">
                 {card.icon}
-              </div>
-
-              <div className="flex items-center gap-1 text-green-400 font-bold">
-
-                <ArrowUpRight size={18} />
-
-                {card.change}
-
               </div>
 
             </div>

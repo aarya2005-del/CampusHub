@@ -9,7 +9,8 @@ const {
   markAttendance,
   getStudentAttendance,
   getAttendanceAnalytics,
-} = require('../controllers/attendanceController');
+  getAttendanceByDate,
+} = require("../controllers/attendanceController");
 // ================= MARK ATTENDANCE =================
 // Only faculty/admin can mark attendance
 // Mark attendance (Admin only)
@@ -19,7 +20,11 @@ router.post(
   adminMiddleware,
   markAttendance
 );
-
+router.get(
+  "/date",
+  authMiddleware,
+  getAttendanceByDate
+);
 // Get attendance for a student
 router.get(
   '/student/:studentId',

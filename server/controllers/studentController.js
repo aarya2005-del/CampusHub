@@ -46,12 +46,41 @@ exports.getAllStudents = async (req, res) => {
 const filter = {};
 
 if (name) {
-  filter.name = {
-    $regex: name,
-    $options: 'i',
-  };
-}
+  const searchTerm = name.trim();
 
+  const yearMatch = searchTerm.match(/^year\s+([1-4])$/i);
+
+  if (yearMatch) {
+    filter.year = Number(yearMatch[1]);
+  } else {
+    filter.$or = [
+      {
+        name: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      },
+      {
+        email: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      },
+      {
+        rollNumber: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      },
+      {
+        department: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      },
+    ];
+  }
+}
 if (department) {
   filter.department = department;
 }
@@ -79,7 +108,7 @@ if (sort === "newest") {
   .sort(sortOption)
   .skip(skip)
   .limit(limitNumber);
-  const totalStudents = await Student.countDocuments();
+  const totalStudents = await Student.countDocuments(filter);
 
 return res.status(200).json({
   totalStudents,
