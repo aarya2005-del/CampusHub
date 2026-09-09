@@ -14,7 +14,8 @@ function AttendancePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [attendance, setAttendance] = useState({});
-const [savingStudent, setSavingStudent] = useState(null);
+  const [savingStudent, setSavingStudent] = useState(null);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
@@ -47,6 +48,8 @@ const [savingStudent, setSavingStudent] = useState(null);
   useEffect(() => {
   const fetchAttendanceByDate = async () => {
     try {
+      setAttendanceLoading(true);
+      setAttendance({});
       const response = await api.get("/attendance/date", {
         params: {
           date: selectedDate,
@@ -72,6 +75,9 @@ const [savingStudent, setSavingStudent] = useState(null);
           "Unable to load attendance."
       );
     }
+    finally {
+  setAttendanceLoading(false);
+}
   };
 
   fetchAttendanceByDate();
@@ -257,7 +263,10 @@ const notMarkedCount = Math.max(
   onClick={() =>
     markAttendance(student._id, "present")
   }
-  disabled={savingStudent === student._id}
+  disabled={
+  attendanceLoading ||
+  savingStudent === student._id
+}
   className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition ${
     attendance[student._id] === "present"
       ? "bg-green-500 text-white border-green-400"

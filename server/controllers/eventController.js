@@ -3,22 +3,33 @@ const Event = require("../models/Event");
 // Create Event
 exports.createEvent = async (req, res) => {
   try {
-    const { title, description, location, eventDate } = req.body;
+    const {
+  title,
+  description,
+  location,
+  eventDate,
+  capacity,
+} = req.body;
 
     if (!title || !description || !location || !eventDate) {
       return res.status(400).json({
         message: "Please fill all fields",
       });
     }
+    if (capacity !== undefined && Number(capacity) < 1) {
+  return res.status(400).json({
+    message: "Capacity must be at least 1",
+  });
+}
 
     const event = await Event.create({
-      title,
-      description,
-      location,
-      eventDate,
-      createdBy: req.user.id,
-    });
-
+  title,
+  description,
+  location,
+  eventDate,
+  capacity: capacity ? Number(capacity) : 100,
+  createdBy: req.user.id,
+});
     return res.status(201).json({
       message: "Event created successfully",
       event,
@@ -75,17 +86,31 @@ exports.getEventById = async (req, res) => {
 // Update Event
 exports.updateEvent = async (req, res) => {
   try {
-    const { title, description, location, eventDate } = req.body;
-
+    const {
+  title,
+  description,
+  location,
+  eventDate,
+  capacity,
+} = req.body;
+if (capacity !== undefined && Number(capacity) < 1) {
+  return res.status(400).json({
+    message: "Capacity must be at least 1",
+  });
+}
     const event = await Event.findByIdAndUpdate(
       req.params.id,
       {
-        title,
-        description,
-        location,
-        eventDate,
-      },
-      { new: true }
+  title,
+  description,
+  location,
+  eventDate,
+  capacity: Number(capacity),
+},
+{
+  new: true,
+  runValidators: true,
+}
     );
 
     if (!event) {

@@ -83,7 +83,10 @@ exports.updateNotice = async (req, res) => {
     const notice = await Notice.findByIdAndUpdate(
       req.params.id,
       { title, description },
-      { new: true }
+      {
+  new: true,
+  runValidators: true,
+}
     );
 
     if (!notice) {
