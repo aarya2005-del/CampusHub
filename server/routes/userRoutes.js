@@ -6,10 +6,12 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 const {
   getProfile,
+  updateProfile,
   getAdminDashboard,
 } = require("../controllers/userController");
 
 router.get("/profile", authMiddleware, getProfile);
+router.put("/profile", authMiddleware, updateProfile);
 
 router.get(
   "/admin",
