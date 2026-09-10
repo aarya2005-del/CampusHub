@@ -51,18 +51,32 @@ exports.getStudentsByYear = async (req, res) => {
 
 exports.getEventsPerMonth = async (req, res) => {
   try {
+    const currentYear = new Date().getFullYear();
+
+    const startOfYear = new Date(
+      currentYear,
+      0,
+      1
+    );
+
+    const startOfNextYear = new Date(
+      currentYear + 1,
+      0,
+      1
+    );
+
     const stats = await Event.aggregate([
       {
         $match: {
           eventDate: {
-            $gte: new Date('2026-01-01'),
-            $lt: new Date('2027-01-01'),
+            $gte: startOfYear,
+            $lt: startOfNextYear,
           },
         },
       },
       {
         $group: {
-          _id: { $month: '$eventDate' },
+          _id: { $month: "$eventDate" },
           count: { $sum: 1 },
         },
       },
@@ -72,16 +86,15 @@ exports.getEventsPerMonth = async (req, res) => {
     ]);
 
     return res.status(200).json({
+      year: currentYear,
       stats,
     });
-
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
   }
 };
-
 // ==============================
 // Overall Attendance Analytics
 // ==============================
