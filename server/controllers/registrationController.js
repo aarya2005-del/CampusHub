@@ -199,3 +199,72 @@ exports.getAllEventAnalytics = async (req, res) => {
     });
   }
 };
+// ================= EVENT REGISTRATIONS =================
+exports.getEventRegistrations = async (req, res) => {
+  try {
+    const { eventId } = req.params;
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: 'Event not found',
+      });
+    }
+
+    const registrations = await EventRegistration.find({
+      event: eventId,
+    })
+      .populate(
+        'student',
+        'name email rollNumber department year'
+      )
+      .sort({ registeredAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        event: {
+          id: event._id,
+          title: event.title,
+          capacity: event.capacity,
+        },
+        registrations,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// ================= REMOVE EVENT REGISTRATION =================
+exports.removeEventRegistration = async (req, res) => {
+  try {
+    const { registrationId } = req.params;
+
+    const registration =
+      await EventRegistration.findById(registrationId);
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        message: "Registration not found",
+      });
+    }
+
+    await registration.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Student removed from event successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
