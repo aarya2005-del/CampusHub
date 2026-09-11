@@ -1,4 +1,6 @@
 const Student = require("../models/Student");
+const Attendance = require("../models/Attendance");
+const EventRegistration = require("../models/EventRegistration");
 
 // Create Student
 exports.createStudent = async (req, res) => {
@@ -186,9 +188,10 @@ exports.updateStudent = async (req, res) => {
 };
 
 // Delete Student
+// Delete Student
 exports.deleteStudent = async (req, res) => {
   try {
-    const student = await Student.findByIdAndDelete(req.params.id);
+    const student = await Student.findById(req.params.id);
 
     if (!student) {
       return res.status(404).json({
@@ -196,16 +199,27 @@ exports.deleteStudent = async (req, res) => {
       });
     }
 
+    // Remove related attendance records
+    await Attendance.deleteMany({
+      student: student._id,
+    });
+
+    // Remove related event registrations
+    await EventRegistration.deleteMany({
+      student: student._id,
+    });
+
+    // Delete student
+    await student.deleteOne();
+
     return res.status(200).json({
       message: "Student deleted successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
   }
 };
-
 
     

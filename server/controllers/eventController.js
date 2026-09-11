@@ -1,4 +1,5 @@
 const Event = require("../models/Event");
+const EventRegistration = require("../models/EventRegistration");
 
 // Create Event
 exports.createEvent = async (req, res) => {
@@ -87,30 +88,53 @@ exports.getEventById = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const {
-  title,
-  description,
-  location,
-  eventDate,
-  capacity,
-} = req.body;
-if (capacity !== undefined && Number(capacity) < 1) {
-  return res.status(400).json({
-    message: "Capacity must be at least 1",
-  });
+      title,
+      description,
+      location,
+      eventDate,
+      capacity,
+    } = req.body;
+
+    if (
+      capacity !== undefined &&
+      Number(capacity) < 1
+    ) {
+      return res.status(400).json({
+        message: "Capacity must be at least 1",
+      });
+    }
+    if (capacity !== undefined) {
+  const registeredCount =
+    await EventRegistration.countDocuments({
+      event: req.params.id,
+    });
+
+  if (Number(capacity) < registeredCount) {
+    return res.status(400).json({
+      message: `Capacity cannot be less than ${registeredCount} registered students`,
+    });
+  }
 }
+
+    const updates = {};
+
+    if (title !== undefined) updates.title = title;
+    if (description !== undefined)
+      updates.description = description;
+    if (location !== undefined)
+      updates.location = location;
+    if (eventDate !== undefined)
+      updates.eventDate = eventDate;
+    if (capacity !== undefined)
+      updates.capacity = Number(capacity);
+
     const event = await Event.findByIdAndUpdate(
       req.params.id,
+      updates,
       {
-  title,
-  description,
-  location,
-  eventDate,
-  capacity: Number(capacity),
-},
-{
-  new: true,
-  runValidators: true,
-}
+        new: true,
+        runValidators: true,
+      }
     );
 
     if (!event) {
@@ -123,7 +147,6 @@ if (capacity !== undefined && Number(capacity) < 1) {
       message: "Event updated successfully",
       event,
     });
-
   } catch (error) {
     return res.status(500).json({
       message: error.message,
@@ -134,7 +157,7 @@ if (capacity !== undefined && Number(capacity) < 1) {
 // Delete Event
 exports.deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
+    const event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({
@@ -142,10 +165,16 @@ exports.deleteEvent = async (req, res) => {
       });
     }
 
+    // Remove registrations belonging to this event
+    await EventRegistration.deleteMany({
+      event: event._id,
+    });
+
+    await event.deleteOne();
+
     return res.status(200).json({
       message: "Event deleted successfully",
     });
-
   } catch (error) {
     return res.status(500).json({
       message: error.message,
