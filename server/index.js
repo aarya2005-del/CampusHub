@@ -17,6 +17,8 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const enrollmentRoutes = require('./routes/enrollmentRoutes');
 
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
@@ -55,6 +57,8 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/registrations', registrationRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/enrollments', enrollmentRoutes);
 
 // ================= SWAGGER DOCUMENTATION =================
 

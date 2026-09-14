@@ -14,7 +14,7 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import NoticesPage from "./pages/NoticesPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
-
+import CoursesPage from "./pages/CoursesPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -68,6 +68,17 @@ function App() {
     <RoleRoute allowedRoles={["admin"]}>
       <DashboardLayout>
         <StudentsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Courses */}
+<Route
+  path="/courses"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <CoursesPage />
       </DashboardLayout>
     </RoleRoute>
   }

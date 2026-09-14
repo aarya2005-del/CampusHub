@@ -6,6 +6,7 @@ import api from "../services/api";
 function StudentDashboardPage() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [student, setStudent] = useState(null);
+  const [courses, setCourses] = useState([]);
 
 useEffect(() => {
   const fetchStudent = async () => {
@@ -18,6 +19,16 @@ useEffect(() => {
   };
 
   fetchStudent();
+  const fetchCourses = async () => {
+  try {
+    const response = await api.get("/enrollments/my-courses");
+    setCourses(response.data.enrollments || []);
+  } catch (error) {
+    console.error("Student courses error:", error);
+  }
+};
+
+fetchCourses();
 }, []);
 
   return (
@@ -105,16 +116,39 @@ useEffect(() => {
       </div>
 
       <div className="bg-slate-900 border border-slate-800 rounded-3xl p-7">
-        <h2 className="text-2xl font-bold">
-          Student Portal
-        </h2>
+  <div className="flex items-center gap-3 mb-6">
+    <BookOpen className="text-blue-400" />
+    <h2 className="text-2xl font-bold">My Courses</h2>
+  </div>
 
-        <p className="text-slate-400 mt-3">
-          Courses, subject-wise attendance, timetable, exams,
-          results, assignments, fees and other student services
-          will appear here as we build them.
-        </p>
-      </div>
+  {courses.length === 0 ? (
+    <p className="text-slate-400">
+      You are not enrolled in any courses yet.
+    </p>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      {courses.map((enrollment) => (
+        <div
+          key={enrollment._id}
+          className="bg-slate-950 border border-slate-800 rounded-2xl p-5"
+        >
+          <p className="text-blue-400 font-bold">
+            {enrollment.course?.code}
+          </p>
+
+          <h3 className="text-lg font-bold mt-1">
+            {enrollment.course?.name}
+          </h3>
+
+          <div className="text-slate-400 text-sm mt-4 space-y-1">
+            <p>Semester: {enrollment.course?.semester}</p>
+            <p>Credits: {enrollment.course?.credits}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
     </div>
   );
 }
