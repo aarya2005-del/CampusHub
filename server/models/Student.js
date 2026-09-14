@@ -31,6 +31,13 @@ const studentSchema = new mongoose.Schema(
       required: true,
     },
 
+    user: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  unique: true,
+  sparse: true,
+},
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

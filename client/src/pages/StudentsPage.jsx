@@ -29,6 +29,9 @@ function StudentsPage() {
   const [editingStudent, setEditingStudent] = useState(null);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [loginStudent, setLoginStudent] = useState(null);
+  const [loginPassword, setLoginPassword] = useState("");
+  const [creatingLogin, setCreatingLogin] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -174,7 +177,39 @@ await fetchStudents();
     );
   }
 };
+const handleCreateLogin = async (event) => {
+  event.preventDefault();
 
+  if (!loginStudent) return;
+
+  if (loginPassword.length < 6) {
+    toast.error("Password must be at least 6 characters");
+    return;
+  }
+
+  try {
+    setCreatingLogin(true);
+
+    await api.post("/auth/create-student-account", {
+      studentId: loginStudent._id,
+      password: loginPassword,
+    });
+
+    toast.success("Student login created successfully");
+
+    setLoginStudent(null);
+    setLoginPassword("");
+
+    await fetchStudents();
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+        "Unable to create student login."
+    );
+  } finally {
+    setCreatingLogin(false);
+  }
+};
   const resetFilters = () => {
     setSearch("");
     setDepartment("");
@@ -370,6 +405,16 @@ await fetchStudents();
 
                     <td className="px-6 py-5">
                       <div className="flex justify-end gap-2">
+                        <button
+  onClick={() => {
+    setLoginStudent(student);
+    setLoginPassword("");
+  }}
+  className="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition text-sm font-semibold"
+  title="Create student login"
+>
+  Create Login
+</button>
                         <button
                           onClick={() =>
                             openEditForm(student)
@@ -571,6 +616,81 @@ await fetchStudents();
           Delete Student
         </button>
       </div>
+    </div>
+  </div>
+)}
+{loginStudent && (
+  <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-md p-7 shadow-2xl">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-black">
+            Create Student Login
+          </h2>
+
+          <p className="text-slate-400 text-sm mt-1">
+            Create login credentials for {loginStudent.name}.
+          </p>
+        </div>
+
+        <button
+          onClick={() => {
+            setLoginStudent(null);
+            setLoginPassword("");
+          }}
+          className="p-2 rounded-lg hover:bg-slate-800"
+        >
+          <X size={22} />
+        </button>
+      </div>
+
+      <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-5">
+        <p className="text-sm text-slate-400">Login Email</p>
+        <p className="font-semibold mt-1">
+          {loginStudent.email}
+        </p>
+      </div>
+
+      <form onSubmit={handleCreateLogin}>
+        <label className="text-sm text-slate-400">
+          Temporary Password
+        </label>
+
+        <input
+          type="password"
+          required
+          minLength={6}
+          value={loginPassword}
+          onChange={(event) =>
+            setLoginPassword(event.target.value)
+          }
+          placeholder="Minimum 6 characters"
+          className="w-full mt-2 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+        />
+
+        <div className="flex justify-end gap-3 mt-7">
+          <button
+            type="button"
+            onClick={() => {
+              setLoginStudent(null);
+              setLoginPassword("");
+            }}
+            className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-semibold"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            disabled={creatingLogin}
+            className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold disabled:opacity-50"
+          >
+            {creatingLogin
+              ? "Creating..."
+              : "Create Login"}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 )}

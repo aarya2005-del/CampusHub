@@ -20,52 +20,84 @@ function DashboardLayout({ children }) {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/");
   };
 
-  const menuItems = [
-    {
-      title: "Dashboard",
-      icon: <LayoutDashboard size={20} />,
-      path: "/dashboard",
-    },
-    {
-      title: "Students",
-      icon: <Users size={20} />,
-      path: "/students",
-    },
-    {
-      title: "Events",
-      icon: <Calendar size={20} />,
-      path: "/events",
-    },
-    {
-      title: "Attendance",
-      icon: <ClipboardCheck size={20} />,
-      path: "/attendance",
-    },
-    {
-      title: "Analytics",
-      icon: <BarChart3 size={20} />,
-      path: "/analytics",
-    },
-    {
-      title: "Notices",
-      icon: <Bell size={20} />,
-      path: "/notices",
-    },
-    {
-      title: "Profile",
-      icon: <User size={20} />,
-      path: "/profile",
-    },
-    {
-      title: "Settings",
-      icon: <Settings size={20} />,
-      path: "/settings",
-    },
-  ];
+  const adminMenuItems = [
+  {
+    title: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+    path: "/dashboard",
+  },
+  {
+    title: "Students",
+    icon: <Users size={20} />,
+    path: "/students",
+  },
+  {
+    title: "Events",
+    icon: <Calendar size={20} />,
+    path: "/events",
+  },
+  {
+    title: "Attendance",
+    icon: <ClipboardCheck size={20} />,
+    path: "/attendance",
+  },
+  {
+    title: "Analytics",
+    icon: <BarChart3 size={20} />,
+    path: "/analytics",
+  },
+  {
+    title: "Notices",
+    icon: <Bell size={20} />,
+    path: "/notices",
+  },
+  {
+    title: "Profile",
+    icon: <User size={20} />,
+    path: "/profile",
+  },
+  {
+    title: "Settings",
+    icon: <Settings size={20} />,
+    path: "/settings",
+  },
+];
 
+const studentMenuItems = [
+  {
+    title: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+    path: "/dashboard",
+  },
+  {
+    title: "Events",
+    icon: <Calendar size={20} />,
+    path: "/events",
+  },
+  {
+    title: "Notices",
+    icon: <Bell size={20} />,
+    path: "/notices",
+  },
+  {
+    title: "Profile",
+    icon: <User size={20} />,
+    path: "/profile",
+  },
+  {
+    title: "Settings",
+    icon: <Settings size={20} />,
+    path: "/settings",
+  },
+];
+
+const menuItems =
+  user.role === "admin"
+    ? adminMenuItems
+    : studentMenuItems;
   return (
     <div className="min-h-screen bg-[#070B1A] text-white flex">
       {/* Sidebar */}

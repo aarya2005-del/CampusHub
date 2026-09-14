@@ -33,7 +33,12 @@ const app = express();
 // ================= MIDDLEWARE =================
 
 // Enable CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 // Parse JSON
 app.use(express.json());

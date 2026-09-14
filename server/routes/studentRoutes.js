@@ -8,6 +8,7 @@ const {
   createStudent,
   getAllStudents,
   getStudentById,
+  getMyStudentProfile,
   updateStudent,
   deleteStudent,
 } = require("../controllers/studentController");
@@ -20,18 +21,24 @@ router.post(
   createStudent
 );
 
-// Get All Students
 router.get(
   "/",
   authMiddleware,
+  adminMiddleware,
   getAllStudents
 );
 
+// Get Logged-In Student Profile
+router.get(
+  "/me",
+  authMiddleware,
+  getMyStudentProfile
+);
 
-// Get Student By ID
 router.get(
   "/:id",
   authMiddleware,
+  adminMiddleware,
   getStudentById
 );
 

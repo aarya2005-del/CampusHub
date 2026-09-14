@@ -5,7 +5,8 @@ import DashboardLayout from "./layouts/DashboardLayout";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
-import DashboardPage from "./pages/DashboardPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import StudentDashboardPage from "./pages/StudentDashboardPage";
 import StudentsPage from "./pages/StudentsPage";
 import EventsPage from "./pages/EventsPage";
 import AttendancePage from "./pages/AttendancePage";
@@ -23,7 +24,20 @@ function ProtectedRoute({ children }) {
 
   return token ? children : <Navigate to="/" replace />;
 }
+function RoleRoute({ children, allowedRoles }) {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!user || !allowedRoles.includes(user.role)) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
 function App() {
   return (
     <BrowserRouter>
@@ -35,28 +49,29 @@ function App() {
 
         {/* Dashboard */}
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <DashboardPage />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Students */}
-        <Route
-          path="/students"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <StudentsPage />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
-
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        {JSON.parse(localStorage.getItem("user") || "{}").role === "admin" ? (
+          <AdminDashboardPage />
+        ) : (
+          <StudentDashboardPage />
+        )}
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+       <Route
+  path="/students"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <StudentsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
         {/* Events */}
         <Route
           path="/events"

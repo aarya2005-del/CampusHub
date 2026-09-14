@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const adminMiddleware = require('../middleware/adminMiddleware');
 
-const { register, login } = require('../controllers/authController');
+const {
+  register,
+  login,
+  createStudentAccount,
+} = require('../controllers/authController');
 
 /**
  * @swagger
@@ -26,5 +32,10 @@ router.post('/login', login);
  *         description: Created
  */
 router.post('/register', register);
-
+router.post(
+  '/create-student-account',
+  authMiddleware,
+  adminMiddleware,
+  createStudentAccount
+);
 module.exports = router;

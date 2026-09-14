@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Student = require('../models/Student');
 
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -120,4 +121,82 @@ res,
 'Login Successful',
 { token, user }
 );
+});
+
+// ================= CREATE STUDENT ACCOUNT =================
+exports.createStudentAccount = asyncHandler(async (req, res) => {
+  const { studentId, password } = req.body;
+
+  if (!studentId || !password) {
+    return errorResponse(
+      res,
+      400,
+      'Student and password are required'
+    );
+  }
+
+  if (password.length < 6) {
+    return errorResponse(
+      res,
+      400,
+      'Password must be at least 6 characters'
+    );
+  }
+
+  const student = await Student.findById(studentId);
+
+  if (!student) {
+    return errorResponse(
+      res,
+      404,
+      'Student not found'
+    );
+  }
+
+  if (student.user) {
+    return errorResponse(
+      res,
+      409,
+      'Student already has a login account'
+    );
+  }
+
+  const existingUser = await User.findOne({
+    email: student.email,
+  });
+
+  if (existingUser) {
+    return errorResponse(
+      res,
+      409,
+      'A user with this email already exists'
+    );
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    name: student.name,
+    email: student.email,
+    password: hashedPassword,
+    role: 'student',
+  });
+
+  student.user = user._id;
+  await student.save();
+
+  return successResponse(
+    res,
+    201,
+    'Student login account created successfully',
+    {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      studentId: student._id,
+    }
+  );
 });
