@@ -8,6 +8,12 @@ const attendanceSchema = new mongoose.Schema(
       required: true,
     },
 
+    course: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Course',
+  required: true,
+},
+
     date: {
       type: Date,
       required: true,
@@ -30,9 +36,10 @@ const attendanceSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate attendance for same student on same date
+// Prevent duplicate attendance for the same student,
+// course and date
 attendanceSchema.index(
-  { student: 1, date: 1 },
+  { student: 1, course: 1, date: 1 },
   { unique: true }
 );
 

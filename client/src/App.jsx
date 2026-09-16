@@ -10,6 +10,7 @@ import StudentDashboardPage from "./pages/StudentDashboardPage";
 import StudentsPage from "./pages/StudentsPage";
 import EventsPage from "./pages/EventsPage";
 import AttendancePage from "./pages/AttendancePage";
+import StudentAttendancePage from "./pages/StudentAttendancePage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import NoticesPage from "./pages/NoticesPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -95,17 +96,29 @@ function App() {
           }
         />
 
-        {/* Attendance */}
-        <Route
-          path="/attendance"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <AttendancePage />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
+        {/* Admin Attendance */}
+<Route
+  path="/attendance"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <AttendancePage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+
+{/* Student Attendance */}
+<Route
+  path="/my-attendance"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentAttendancePage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
 
         {/* Analytics */}
         <Route

@@ -71,7 +71,7 @@ fetchCourses();
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         <Link
-          to="/attendance"
+          to="/my-attendance"
           className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-blue-500 transition"
         >
           <BookOpen className="text-blue-400 mb-4" size={30} />

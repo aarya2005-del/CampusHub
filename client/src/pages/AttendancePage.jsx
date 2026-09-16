@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 
 function AttendancePage() {
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -20,41 +22,75 @@ function AttendancePage() {
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        setLoading(true);
+ useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
 
-        const response = await api.get("/students", {
-          params: {
-            limit: 100,
-            sort: "az",
-          },
-        });
+      const response = await api.get("/courses");
+      setCourses(response.data.courses || []);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Unable to load courses."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setStudents(response.data.students || []);
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message ||
-            "Unable to load students."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  fetchCourses();
+}, []);
+useEffect(() => {
+  const fetchEnrolledStudents = async () => {
+    if (!selectedCourse) {
+      setStudents([]);
+      setAttendance({});
+      return;
+    }
 
-    fetchStudents();
-  }, []);
+    try {
+      setLoading(true);
+
+      const response = await api.get(
+        `/enrollments/course/${selectedCourse}`
+      );
+
+      const enrollments = response.data.enrollments || [];
+
+      setStudents(
+        enrollments
+          .map((enrollment) => enrollment.student)
+          .filter(Boolean)
+      );
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Unable to load enrolled students."
+      );
+      setStudents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchEnrolledStudents();
+}, [selectedCourse]);
   useEffect(() => {
   const fetchAttendanceByDate = async () => {
+    if (!selectedCourse) {
+  setAttendance({});
+  return;
+}
     try {
       setAttendanceLoading(true);
       setAttendance({});
       const response = await api.get("/attendance/date", {
-        params: {
-          date: selectedDate,
-        },
-      });
+  params: {
+    date: selectedDate,
+    courseId: selectedCourse,
+  },
+});
 
       const records =
         response.data?.data?.attendance || [];
@@ -81,8 +117,7 @@ function AttendancePage() {
   };
 
   fetchAttendanceByDate();
-}, [selectedDate]);
-
+}, [selectedDate, selectedCourse]);
   const filteredStudents = students.filter((student) => {
     const term = search.toLowerCase();
 
@@ -111,11 +146,11 @@ const notMarkedCount = Math.max(
     setSavingStudent(studentId);
 
     await api.post("/attendance/mark", {
-      studentId,
-      date: selectedDate,
-      status,
-    });
-
+  studentId,
+  courseId: selectedCourse,
+  date: selectedDate,
+  status,
+});
     setAttendance((current) => ({
       ...current,
       [studentId]: status,
@@ -147,6 +182,28 @@ const notMarkedCount = Math.max(
           <p className="text-slate-400 mt-2">
             Mark and manage daily student attendance.
           </p>
+          <div className="mt-5">
+  <label className="block text-sm text-slate-400 mb-2">
+    Select Course
+  </label>
+
+  <select
+    value={selectedCourse}
+    onChange={(event) => {
+      setSelectedCourse(event.target.value);
+      setAttendance({});
+    }}
+    className="w-full md:w-96 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+  >
+    <option value="">Choose a course</option>
+
+    {courses.map((course) => (
+      <option key={course._id} value={course._id}>
+        {course.code} - {course.name}
+      </option>
+    ))}
+  </select>
+</div>
         </div>
 
         <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3">
