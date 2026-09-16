@@ -21,6 +21,8 @@ import StudentTimetablePage from "./pages/StudentTimetablePage";
 import StudentPlannerPage from "./pages/StudentPlannerPage";
 import ExamsPage from "./pages/ExamsPage";
 import StudentExamsPage from "./pages/StudentExamsPage";
+import ResultsPage from "./pages/ResultsPage";
+import StudentResultsPage from "./pages/StudentResultsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -111,6 +113,18 @@ function App() {
     </RoleRoute>
   }
 />
+{/* Results */}
+<Route
+  path="/results"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <ResultsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+
 {/* Student Timetable */}
 <Route
   path="/my-timetable"
@@ -129,6 +143,17 @@ function App() {
     <RoleRoute allowedRoles={["student"]}>
       <DashboardLayout>
         <StudentExamsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Student Results */}
+<Route
+  path="/my-results"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentResultsPage />
       </DashboardLayout>
     </RoleRoute>
   }
