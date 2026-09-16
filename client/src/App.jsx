@@ -18,6 +18,7 @@ import SettingsPage from "./pages/SettingsPage";
 import CoursesPage from "./pages/CoursesPage";
 import TimetablePage from "./pages/TimetablePage";
 import StudentTimetablePage from "./pages/StudentTimetablePage";
+import StudentPlannerPage from "./pages/StudentPlannerPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -104,6 +105,17 @@ function App() {
     <RoleRoute allowedRoles={["student"]}>
       <DashboardLayout>
         <StudentTimetablePage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Student Personal Planner */}
+<Route
+  path="/my-planner"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentPlannerPage />
       </DashboardLayout>
     </RoleRoute>
   }
