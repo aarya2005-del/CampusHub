@@ -16,6 +16,8 @@ import NoticesPage from "./pages/NoticesPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import CoursesPage from "./pages/CoursesPage";
+import TimetablePage from "./pages/TimetablePage";
+import StudentTimetablePage from "./pages/StudentTimetablePage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -80,6 +82,28 @@ function App() {
     <RoleRoute allowedRoles={["admin"]}>
       <DashboardLayout>
         <CoursesPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Timetable */}
+<Route
+  path="/timetable"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <TimetablePage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Student Timetable */}
+<Route
+  path="/my-timetable"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentTimetablePage />
       </DashboardLayout>
     </RoleRoute>
   }
