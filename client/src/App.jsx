@@ -19,6 +19,8 @@ import CoursesPage from "./pages/CoursesPage";
 import TimetablePage from "./pages/TimetablePage";
 import StudentTimetablePage from "./pages/StudentTimetablePage";
 import StudentPlannerPage from "./pages/StudentPlannerPage";
+import ExamsPage from "./pages/ExamsPage";
+import StudentExamsPage from "./pages/StudentExamsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -98,6 +100,17 @@ function App() {
     </RoleRoute>
   }
 />
+{/* Exams */}
+<Route
+  path="/exams"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <ExamsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
 {/* Student Timetable */}
 <Route
   path="/my-timetable"
@@ -109,6 +122,18 @@ function App() {
     </RoleRoute>
   }
 />
+{/* Student Exams */}
+<Route
+  path="/my-exams"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentExamsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+
 {/* Student Personal Planner */}
 <Route
   path="/my-planner"

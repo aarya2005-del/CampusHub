@@ -21,6 +21,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
 const timetableRoutes = require('./routes/timetableRoutes');
 const plannerRoutes = require('./routes/plannerRoutes');
+const examRoutes = require('./routes/examRoutes');
 
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
@@ -63,6 +64,8 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/planner', plannerRoutes);
+app.use('/api/exams', examRoutes);
+
 
 // ================= SWAGGER DOCUMENTATION =================
 
