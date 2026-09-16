@@ -23,6 +23,7 @@ import ExamsPage from "./pages/ExamsPage";
 import StudentExamsPage from "./pages/StudentExamsPage";
 import ResultsPage from "./pages/ResultsPage";
 import StudentResultsPage from "./pages/StudentResultsPage";
+import StudentAdmitCardPage from "./pages/StudentAdmitCardPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -154,6 +155,17 @@ function App() {
     <RoleRoute allowedRoles={["student"]}>
       <DashboardLayout>
         <StudentResultsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Student Admit Card */}
+<Route
+  path="/my-admit-card"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentAdmitCardPage />
       </DashboardLayout>
     </RoleRoute>
   }
