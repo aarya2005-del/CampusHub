@@ -24,6 +24,8 @@ const plannerRoutes = require('./routes/plannerRoutes');
 const examRoutes = require('./routes/examRoutes');
 const resultRoutes = require('./routes/resultRoutes');
 const admitCardRoutes = require('./routes/admitCardRoutes');
+const feeRoutes = require('./routes/feeRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -68,7 +70,8 @@ app.use('/api/planner', plannerRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/admit-card', admitCardRoutes);
-
+app.use('/api/fees', feeRoutes);
+app.use('/api/payments', paymentRoutes);
 
 
 // ================= SWAGGER DOCUMENTATION =================

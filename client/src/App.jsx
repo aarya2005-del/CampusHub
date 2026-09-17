@@ -24,6 +24,8 @@ import StudentExamsPage from "./pages/StudentExamsPage";
 import ResultsPage from "./pages/ResultsPage";
 import StudentResultsPage from "./pages/StudentResultsPage";
 import StudentAdmitCardPage from "./pages/StudentAdmitCardPage";
+import FeesPage from "./pages/FeesPage";
+import StudentFeesPage from "./pages/StudentFeesPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -125,6 +127,17 @@ function App() {
     </RoleRoute>
   }
 />
+{/* Fees Management */}
+<Route
+  path="/fees"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <FeesPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
 
 {/* Student Timetable */}
 <Route
@@ -166,6 +179,17 @@ function App() {
     <RoleRoute allowedRoles={["student"]}>
       <DashboardLayout>
         <StudentAdmitCardPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+{/* Student Fees */}
+<Route
+  path="/my-fees"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentFeesPage />
       </DashboardLayout>
     </RoleRoute>
   }
