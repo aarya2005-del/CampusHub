@@ -27,6 +27,10 @@ const admitCardRoutes = require('./routes/admitCardRoutes');
 const feeRoutes = require('./routes/feeRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const lostFoundRoutes = require('./routes/lostFoundRoutes');
+const assignmentRoutes = require('./routes/assignmentRoutes');
+const assignmentSubmissionRoutes = require(
+  "./routes/assignmentSubmissionRoutes"
+);
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -74,6 +78,11 @@ app.use('/api/admit-card', admitCardRoutes);
 app.use('/api/fees', feeRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/lost-found', lostFoundRoutes);
+app.use('/api/assignments', assignmentRoutes);
+app.use(
+  "/api/assignment-submissions",
+  assignmentSubmissionRoutes
+);
 
 
 // ================= SWAGGER DOCUMENTATION =================

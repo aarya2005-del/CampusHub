@@ -27,6 +27,8 @@ import StudentAdmitCardPage from "./pages/StudentAdmitCardPage";
 import FeesPage from "./pages/FeesPage";
 import StudentFeesPage from "./pages/StudentFeesPage";
 import LostFoundPage from "./pages/LostFoundPage";
+import AssignmentsPage from "./pages/AssignmentsPage";
+import StudentAssignmentsPage from "./pages/StudentAssignmentsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -300,7 +302,26 @@ function App() {
     </ProtectedRoute>
   }
 />
-
+<Route
+  path="/assignments"
+  element={
+    <RoleRoute allowedRoles={["admin", "faculty"]}>
+      <DashboardLayout>
+        <AssignmentsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
+<Route
+  path="/my-assignments"
+  element={
+    <RoleRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentAssignmentsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
         {/* Redirect unknown routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
