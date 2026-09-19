@@ -9,6 +9,8 @@ function StudentAssignmentsPage() {
 
   const [submissionMessages, setSubmissionMessages] =
     useState({});
+    const [submissionFiles, setSubmissionFiles] =
+  useState({});
 
   const fetchAssignments = async () => {
     try {
@@ -36,39 +38,55 @@ function StudentAssignmentsPage() {
   };
 
   const handleSubmit = async (assignmentId) => {
-    const message =
-      submissionMessages[assignmentId] || "";
+  const message =
+    submissionMessages[assignmentId] || "";
 
-    if (!message.trim()) {
-      toast.error("Please enter your submission");
-      return;
+  const file =
+    submissionFiles[assignmentId] || null;
+
+  if (!message.trim() && !file) {
+    toast.error(
+      "Please enter a submission or attach a file"
+    );
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append("message", message);
+
+    if (file) {
+      formData.append("file", file);
     }
 
-    try {
-      await api.post(
-        `/assignment-submissions/${assignmentId}`,
-        {
-          message,
-        }
-      );
+    await api.post(
+      `/assignment-submissions/${assignmentId}`,
+      formData
+    );
 
-      toast.success(
-        "Assignment submitted successfully"
-      );
+    toast.success(
+      "Assignment submitted successfully"
+    );
 
-      setSubmissionMessages((previous) => ({
-        ...previous,
-        [assignmentId]: "",
-      }));
+    setSubmissionMessages((previous) => ({
+      ...previous,
+      [assignmentId]: "",
+    }));
 
-      await fetchAssignments();
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message ||
-          "Unable to submit assignment"
-      );
-    }
-  };
+    setSubmissionFiles((previous) => ({
+      ...previous,
+      [assignmentId]: null,
+    }));
+
+    await fetchAssignments();
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+        "Unable to submit assignment"
+    );
+  }
+};
 
   useEffect(() => {
     fetchAssignments();
@@ -167,6 +185,16 @@ function StudentAssignmentsPage() {
                         </p>
                       </div>
                     )}
+                    {submission.fileUrl && (
+  <a
+    href={submission.fileUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-4 text-blue-400 hover:text-blue-300 font-bold"
+  >
+    View Attachment ↗
+  </a>
+)}
 
                     {submission.marksObtained !== null &&
                       submission.marksObtained !==
@@ -212,6 +240,32 @@ function StudentAssignmentsPage() {
                       rows="4"
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 resize-none"
                     />
+                    <div className="mt-3">
+  <label className="block text-sm font-bold mb-2">
+    Attachment (Optional)
+  </label>
+
+  <input
+    type="file"
+    accept=".pdf,.jpg,.jpeg,.png,.webp"
+    onChange={(e) =>
+      setSubmissionFiles((previous) => ({
+        ...previous,
+        [assignment._id]:
+          e.target.files?.[0] || null,
+      }))
+    }
+    className="block w-full text-sm text-slate-400
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-lg file:border-0
+      file:bg-slate-800 file:text-white
+      file:font-bold hover:file:bg-slate-700"
+  />
+
+  <p className="text-xs text-slate-500 mt-2">
+    PDF, JPG, PNG or WEBP — maximum 5 MB
+  </p>
+</div>
 
                     <button
                       type="button"

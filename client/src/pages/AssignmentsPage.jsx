@@ -430,6 +430,16 @@ const handleGradeSubmission = async (
                 </p>
               </div>
             )}
+            {submission.fileUrl && (
+  <a
+    href={submission.fileUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-4 text-blue-400 hover:text-blue-300 font-bold"
+  >
+    View Attachment ↗
+  </a>
+)}
             <div className="mt-5 border-t border-slate-800 pt-5">
   <p className="font-bold mb-3">
     Grade Submission

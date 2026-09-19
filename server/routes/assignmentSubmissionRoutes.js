@@ -7,6 +7,9 @@ const authMiddleware = require(
 const facultyAdminMiddleware = require(
   "../middleware/facultyAdminMiddleware"
 );
+const assignmentUpload = require(
+  "../middleware/assignmentUploadMiddleware"
+);
 const {
   submitAssignment,
   getMySubmissions,
@@ -35,7 +38,8 @@ router.patch(
 router.post(
   "/:assignmentId",
   authMiddleware,
+  assignmentUpload.single("file"),
   submitAssignment
-);
+);;
 
 module.exports = router;
