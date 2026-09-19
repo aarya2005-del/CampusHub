@@ -24,6 +24,13 @@ exports.registerForEvent = async (req, res) => {
         message: 'Event not found',
       });
     }
+    // Prevent registration for past events
+if (new Date(event.eventDate) < new Date()) {
+  return res.status(400).json({
+    success: false,
+    message: 'Registration is closed for this event',
+  });
+}
 
     // Check student exists
     const student = await Student.findById(studentId);
@@ -80,10 +87,19 @@ exports.registerForEvent = async (req, res) => {
 // ================= MY REGISTERED EVENTS =================
 exports.getMyRegisteredEvents = async (req, res) => {
   try {
-    const { studentId } = req.params;
+    const student = await Student.findOne({
+      user: req.user.id,
+    });
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student profile not found",
+      });
+    }
 
     const registrations = await EventRegistration.find({
-      student: studentId,
+      student: student._id,
     })
       .populate(
         'event',
