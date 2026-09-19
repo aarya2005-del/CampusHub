@@ -19,6 +19,11 @@ const noticeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    audience: {
+  type: String,
+  enum: ["All", "Students", "Faculty", "Staff"],
+  default: "All",
+},
   },
   {
     timestamps: true,

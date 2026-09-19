@@ -25,9 +25,10 @@ function NoticesPage() {
   const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-  });
+  title: "",
+  description: "",
+  audience: "All",
+});
 
   const fetchNotices = async () => {
     try {
@@ -63,9 +64,10 @@ function NoticesPage() {
     setEditingNotice(null);
 
     setForm({
-      title: "",
-      description: "",
-    });
+  title: "",
+  description: "",
+  audience: "All",
+});
 
     setShowForm(true);
   };
@@ -74,9 +76,10 @@ function NoticesPage() {
     setEditingNotice(notice);
 
     setForm({
-      title: notice.title || "",
-      description: notice.description || "",
-    });
+  title: notice.title || "",
+  description: notice.description || "",
+  audience: notice.audience || "All",
+});
 
     setShowForm(true);
   };
@@ -86,9 +89,10 @@ function NoticesPage() {
     setEditingNotice(null);
 
     setForm({
-      title: "",
-      description: "",
-    });
+  title: "",
+  description: "",
+  audience: "All",
+});
   };
 
   const handleSubmit = async (event) => {
@@ -266,6 +270,15 @@ function NoticesPage() {
 
                   <div className="flex flex-wrap gap-4 mt-5 text-sm text-slate-500">
                     <div className="flex items-center gap-2">
+  <span className="font-semibold text-blue-400">
+    Audience:
+  </span>
+
+  <span>
+    {notice.audience || "All"}
+  </span>
+</div>
+                    <div className="flex items-center gap-2">
                       <CalendarDays size={15} />
 
                       {notice.createdAt
@@ -357,6 +370,23 @@ function NoticesPage() {
                   className="mt-2 w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
                 />
               </div>
+              <div>
+  <label className="text-sm text-slate-400">
+    Audience
+  </label>
+
+  <select
+    name="audience"
+    value={form.audience}
+    onChange={handleChange}
+    className="mt-2 w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+  >
+    <option value="All">All</option>
+    <option value="Students">Students</option>
+    <option value="Faculty">Faculty</option>
+    <option value="Staff">Staff</option>
+  </select>
+</div>
 
               <div>
                 <label className="text-sm text-slate-400">
