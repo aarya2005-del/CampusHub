@@ -24,6 +24,15 @@ function DashboardLayout({ children }) {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+const [searchResults, setSearchResults] = useState({
+  students: [],
+  events: [],
+  notices: [],
+});
+const [searching, setSearching] = useState(false);
+const [showSearchResults, setShowSearchResults] =
+  useState(false);
 
 useEffect(() => {
   const fetchUnreadCount = async () => {
@@ -45,7 +54,43 @@ useEffect(() => {
 
   fetchUnreadCount();
 }, [location.pathname]);
+useEffect(() => {
+  const query = searchQuery.trim();
 
+  if (query.length < 2) {
+    setSearchResults({
+      students: [],
+      events: [],
+      notices: [],
+    });
+    setShowSearchResults(false);
+    return;
+  }
+
+  const timer = setTimeout(async () => {
+    try {
+      setSearching(true);
+
+      const response = await api.get(
+        `/search?q=${encodeURIComponent(query)}`
+      );
+
+      setSearchResults({
+        students: response.data.students || [],
+        events: response.data.events || [],
+        notices: response.data.notices || [],
+      });
+
+      setShowSearchResults(true);
+    } catch (error) {
+      console.error("Search failed", error);
+    } finally {
+      setSearching(false);
+    }
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [searchQuery]);
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -194,18 +239,123 @@ const menuItems =
         <header className="sticky top-0 z-10 bg-[#070B1A]/80 backdrop-blur-xl border-b border-white/10 px-8 py-5">
           <div className="flex items-center justify-between">
             {/* Search */}
-            <div className="relative w-full max-w-xl">
-              <Search
-                size={20}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              />
+            {/* Search */}
+<div className="relative w-full max-w-xl">
+  <Search
+    size={20}
+    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+  />
 
-              <input
-                type="text"
-                placeholder="Search students, events, notices..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+  <input
+    type="text"
+    value={searchQuery}
+    onChange={(e) =>
+      setSearchQuery(e.target.value)
+    }
+    onFocus={() => {
+      if (searchQuery.trim().length >= 2) {
+        setShowSearchResults(true);
+      }
+    }}
+    placeholder="Search students, events, notices..."
+    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+
+  {showSearchResults && (
+    <div className="absolute top-full left-0 right-0 mt-2 bg-[#0D1224] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+      {searching ? (
+        <div className="p-4 text-slate-400">
+          Searching...
+        </div>
+      ) : (
+        <div className="max-h-96 overflow-y-auto">
+          {searchResults.students.length === 0 &&
+          searchResults.events.length === 0 &&
+          searchResults.notices.length === 0 ? (
+            <div className="p-4 text-slate-400">
+              No results found.
             </div>
+          ) : (
+            <>
+              {searchResults.students.map(
+                (student) => (
+                  <button
+                    key={student._id}
+                    type="button"
+                    onClick={() => {
+                      setShowSearchResults(false);
+                      setSearchQuery("");
+                      navigate("/students");
+                    }}
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 border-b border-white/5"
+                  >
+                    <p className="font-semibold">
+                      {student.name}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Student
+                      {student.rollNumber
+                        ? ` • ${student.rollNumber}`
+                        : ""}
+                    </p>
+                  </button>
+                )
+              )}
+
+              {searchResults.events.map((event) => (
+                <button
+                  key={event._id}
+                  type="button"
+                  onClick={() => {
+                    setShowSearchResults(false);
+                    setSearchQuery("");
+                    navigate("/events");
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-white/10 border-b border-white/5"
+                >
+                  <p className="font-semibold">
+                    {event.title}
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    Event
+                    {event.location
+                      ? ` • ${event.location}`
+                      : ""}
+                  </p>
+                </button>
+              ))}
+
+              {searchResults.notices.map(
+                (notice) => (
+                  <button
+                    key={notice._id}
+                    type="button"
+                    onClick={() => {
+                      setShowSearchResults(false);
+                      setSearchQuery("");
+                      navigate("/notices");
+                    }}
+                    className="w-full text-left px-4 py-3 hover:bg-white/10 border-b border-white/5 last:border-b-0"
+                  >
+                    <p className="font-semibold">
+                      {notice.title}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Notice
+                      {notice.audience
+                        ? ` • ${notice.audience}`
+                        : ""}
+                    </p>
+                  </button>
+                )
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
             {/* Right Side */}
             <div className="flex items-center gap-4 ml-6">
