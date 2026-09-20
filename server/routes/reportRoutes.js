@@ -11,6 +11,7 @@ const adminMiddleware = require(
 
 const {
   getStudentReport,
+  getAttendanceReport,
 } = require(
   "../controllers/reportController"
 );
@@ -21,5 +22,10 @@ router.get(
   adminMiddleware,
   getStudentReport
 );
-
+router.get(
+  "/attendance",
+  authMiddleware,
+  adminMiddleware,
+  getAttendanceReport
+);
 module.exports = router;
