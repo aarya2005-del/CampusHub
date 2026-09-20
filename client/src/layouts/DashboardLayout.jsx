@@ -1,4 +1,10 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 import {
   LayoutDashboard,
   Users,
@@ -17,6 +23,28 @@ function DashboardLayout({ children }) {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [unreadCount, setUnreadCount] = useState(0);
+
+useEffect(() => {
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await api.get(
+        "/notifications/me"
+      );
+
+      setUnreadCount(
+        response.data.unreadCount || 0
+      );
+    } catch (error) {
+      console.error(
+        "Unable to load notification count",
+        error
+      );
+    }
+  };
+
+  fetchUnreadCount();
+}, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -181,14 +209,20 @@ const menuItems =
 
             {/* Right Side */}
             <div className="flex items-center gap-4 ml-6">
-              <button className="relative p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10">
-                <Bell size={20} />
+              <button
+  type="button"
+  onClick={() => navigate("/notifications")}
+  className="relative p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10"
+  title="Notifications"
+>
+  <Bell size={20} />
 
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">
-                  3
-                </span>
-              </button>
-
+  {unreadCount > 0 && (
+    <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-red-500 rounded-full text-xs flex items-center justify-center">
+      {unreadCount > 99 ? "99+" : unreadCount}
+    </span>
+  )}
+</button>
               <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-2">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center font-bold">
                   {user?.name?.charAt(0) || "U"}

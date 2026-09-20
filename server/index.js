@@ -31,6 +31,9 @@ const assignmentRoutes = require('./routes/assignmentRoutes');
 const assignmentSubmissionRoutes = require(
   "./routes/assignmentSubmissionRoutes"
 );
+const notificationRoutes = require(
+  "./routes/notificationRoutes"
+);
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -82,6 +85,10 @@ app.use('/api/assignments', assignmentRoutes);
 app.use(
   "/api/assignment-submissions",
   assignmentSubmissionRoutes
+);
+app.use(
+  "/api/notifications",
+  notificationRoutes
 );
 
 

@@ -2,6 +2,7 @@ const Assignment = require("../models/Assignment");
 const Course = require("../models/Course");
 const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
+const Notification = require("../models/Notification");
 
 exports.createAssignment = async (req, res) => {
   try {
@@ -61,6 +62,35 @@ exports.createAssignment = async (req, res) => {
       "createdBy",
       "name email role"
     );
+    // Notify enrolled students only when published
+if (assignment.status === "Published") {
+  const enrollments = await Enrollment.find({
+    course: courseId,
+  }).select("student");
+
+  const studentIds = enrollments.map(
+    (enrollment) => enrollment.student
+  );
+
+  const students = await Student.find({
+    _id: { $in: studentIds },
+    user: { $exists: true, $ne: null },
+  }).select("user");
+
+  if (students.length > 0) {
+    const notifications = students.map(
+      (student) => ({
+        user: student.user,
+        title: "New Assignment",
+        message: `${course.code}: ${assignment.title}`,
+        type: "assignment",
+        link: "/my-assignments",
+      })
+    );
+
+    await Notification.insertMany(notifications);
+  }
+}
 
     return res.status(201).json({
       message: "Assignment created successfully",

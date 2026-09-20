@@ -29,6 +29,7 @@ import StudentFeesPage from "./pages/StudentFeesPage";
 import LostFoundPage from "./pages/LostFoundPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import StudentAssignmentsPage from "./pages/StudentAssignmentsPage";
+import NotificationsPage from "./pages/NotificationsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -320,6 +321,17 @@ function App() {
         <StudentAssignmentsPage />
       </DashboardLayout>
     </RoleRoute>
+  }
+/>
+{/* Notifications */}
+<Route
+  path="/notifications"
+  element={
+    <ProtectedRoute>
+      <DashboardLayout>
+        <NotificationsPage />
+      </DashboardLayout>
+    </ProtectedRoute>
   }
 />
         {/* Redirect unknown routes */}
