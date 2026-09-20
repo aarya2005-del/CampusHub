@@ -30,6 +30,7 @@ import LostFoundPage from "./pages/LostFoundPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import StudentAssignmentsPage from "./pages/StudentAssignmentsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import ReportsPage from "./pages/ReportsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -332,6 +333,17 @@ function App() {
         <NotificationsPage />
       </DashboardLayout>
     </ProtectedRoute>
+  }
+/>
+{/* Reports */}
+<Route
+  path="/reports"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <ReportsPage />
+      </DashboardLayout>
+    </RoleRoute>
   }
 />
         {/* Redirect unknown routes */}

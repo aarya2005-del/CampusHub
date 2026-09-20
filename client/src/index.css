@@ -6,3 +6,57 @@ body {
   background-color: #0f172a;
   color: white;
 }
+@media print {
+  body {
+    background: white !important;
+  }
+
+  aside,
+  header {
+    display: none !important;
+  }
+
+  main {
+    overflow: visible !important;
+  }
+
+  main > div {
+    padding: 0 !important;
+  }
+
+  .print-report {
+    color: black !important;
+    background: white !important;
+  }
+
+  .print-report button {
+    display: none !important;
+  }
+
+  .print-report * {
+    box-shadow: none !important;
+  }
+
+  .print-report .text-white {
+    color: black !important;
+  }
+
+  .print-report .text-slate-300,
+  .print-report .text-slate-400,
+  .print-report .text-slate-500 {
+    color: #374151 !important;
+  }
+
+  .print-report table {
+    width: 100% !important;
+    font-size: 11px;
+  }
+
+  .print-report tr {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 15mm;
+  }
+}

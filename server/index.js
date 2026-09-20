@@ -37,6 +37,9 @@ const notificationRoutes = require(
 const searchRoutes = require(
   "./routes/searchRoutes"
 );
+const reportRoutes = require(
+  "./routes/reportRoutes"
+);
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -96,6 +99,10 @@ app.use(
 app.use(
   "/api/search",
   searchRoutes
+);
+app.use(
+  "/api/reports",
+  reportRoutes
 );
 
 
