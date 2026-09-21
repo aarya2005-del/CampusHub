@@ -1,4 +1,5 @@
 const Course = require("../models/Course");
+const logAudit = require("../utils/auditLogger");
 
 // Create Course
 exports.createCourse = async (req, res) => {
@@ -44,6 +45,13 @@ exports.createCourse = async (req, res) => {
       credits: Number(credits),
       createdBy: req.user.id,
     });
+    await logAudit({
+  user: req.user.id,
+  action: "CREATE",
+  resourceType: "Course",
+  resourceId: course._id,
+  details: `Created course ${course.code} - ${course.name}`,
+});
 
     return res.status(201).json({
       message: "Course created successfully",
@@ -130,7 +138,13 @@ exports.updateCourse = async (req, res) => {
         message: "Course not found",
       });
     }
-
+await logAudit({
+  user: req.user.id,
+  action: "UPDATE",
+  resourceType: "Course",
+  resourceId: course._id,
+  details: `Updated course ${course.code} - ${course.name}`,
+});
     return res.status(200).json({
       message: "Course updated successfully",
       course,
@@ -161,7 +175,15 @@ exports.deleteCourse = async (req, res) => {
 
     await course.deleteOne();
 
-    return res.status(200).json({
+await logAudit({
+  user: req.user.id,
+  action: "DELETE",
+  resourceType: "Course",
+  resourceId: course._id,
+  details: `Deleted course ${course.code} - ${course.name}`,
+});
+
+return res.status(200).json({
       message: "Course deleted successfully",
     });
   } catch (error) {

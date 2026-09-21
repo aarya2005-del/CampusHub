@@ -31,6 +31,7 @@ import AssignmentsPage from "./pages/AssignmentsPage";
 import StudentAssignmentsPage from "./pages/StudentAssignmentsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import ReportsPage from "./pages/ReportsPage";
+import AuditLogsPage from "./pages/AuditLogsPage";
 // Toasts
 import { Toaster } from "react-hot-toast";
 
@@ -143,7 +144,14 @@ function App() {
     </RoleRoute>
   }
 />
-
+<Route
+  path="/audit-logs"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <AuditLogsPage />
+    </RoleRoute>
+  }
+/>
 {/* Student Timetable */}
 <Route
   path="/my-timetable"

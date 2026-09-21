@@ -1,6 +1,7 @@
 const Student = require("../models/Student");
 const Attendance = require("../models/Attendance");
 const EventRegistration = require("../models/EventRegistration");
+const logAudit = require("../utils/auditLogger");
 
 // Create Student
 exports.createStudent = async (req, res) => {
@@ -21,6 +22,13 @@ exports.createStudent = async (req, res) => {
       year,
       createdBy: req.user.id,
     });
+    await logAudit({
+  user: req.user.id,
+  action: "CREATE",
+  resourceType: "Student",
+  resourceId: student._id,
+  details: `Created student ${student.name} (${student.rollNumber})`,
+});
 
     return res.status(201).json({
       message: "Student created successfully",
@@ -197,6 +205,13 @@ exports.updateStudent = async (req, res) => {
         message: "Student not found",
       });
     }
+    await logAudit({
+  user: req.user.id,
+  action: "UPDATE",
+  resourceType: "Student",
+  resourceId: student._id,
+  details: `Updated student ${student.name} (${student.rollNumber})`,
+});
 
     return res.status(200).json({
       message: "Student updated successfully",
@@ -232,11 +247,20 @@ exports.deleteStudent = async (req, res) => {
     });
 
     // Delete student
-    await student.deleteOne();
+   // Delete student
+await student.deleteOne();
 
-    return res.status(200).json({
-      message: "Student deleted successfully",
-    });
+await logAudit({
+  user: req.user.id,
+  action: "DELETE",
+  resourceType: "Student",
+  resourceId: student._id,
+  details: `Deleted student ${student.name} (${student.rollNumber})`,
+});
+
+return res.status(200).json({
+  message: "Student deleted successfully",
+});
   } catch (error) {
     return res.status(500).json({
       message: error.message,

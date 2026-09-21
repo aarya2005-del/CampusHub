@@ -1,4 +1,5 @@
 const Notice = require("../models/Notice");
+const logAudit = require("../utils/auditLogger");
 
 // Create Notice
 exports.createNotice = async (req, res) => {
@@ -22,6 +23,13 @@ exports.createNotice = async (req, res) => {
   description,
   audience,
   createdBy: req.user.id,
+});
+await logAudit({
+  user: req.user.id,
+  action: "CREATE",
+  resourceType: "Notice",
+  resourceId: notice._id,
+  details: `Created notice ${notice.title}`,
 });
     return res.status(201).json({
       message: "Notice created successfully",
@@ -152,6 +160,13 @@ exports.updateNotice = async (req, res) => {
         message: "Notice not found",
       });
     }
+    await logAudit({
+  user: req.user.id,
+  action: "UPDATE",
+  resourceType: "Notice",
+  resourceId: notice._id,
+  details: `Updated notice ${notice.title}`,
+});
 
     return res.status(200).json({
       message: "Notice updated successfully",
@@ -175,6 +190,13 @@ exports.deleteNotice = async (req, res) => {
         message: "Notice not found",
       });
     }
+    await logAudit({
+  user: req.user.id,
+  action: "DELETE",
+  resourceType: "Notice",
+  resourceId: notice._id,
+  details: `Deleted notice ${notice.title}`,
+});
 
     return res.status(200).json({
       message: "Notice deleted successfully",

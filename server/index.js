@@ -40,6 +40,7 @@ const searchRoutes = require(
 const reportRoutes = require(
   "./routes/reportRoutes"
 );
+const auditLogRoutes = require("./routes/auditLogRoutes");
 // Middleware
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -104,6 +105,7 @@ app.use(
   "/api/reports",
   reportRoutes
 );
+app.use("/api/audit-logs", auditLogRoutes);
 
 
 // ================= SWAGGER DOCUMENTATION =================

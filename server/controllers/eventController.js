@@ -1,6 +1,6 @@
 const Event = require("../models/Event");
 const EventRegistration = require("../models/EventRegistration");
-
+const logAudit = require("../utils/auditLogger");
 // Create Event
 exports.createEvent = async (req, res) => {
   try {
@@ -30,6 +30,13 @@ exports.createEvent = async (req, res) => {
   eventDate,
   capacity: capacity ? Number(capacity) : 100,
   createdBy: req.user.id,
+});
+await logAudit({
+  user: req.user.id,
+  action: "CREATE",
+  resourceType: "Event",
+  resourceId: event._id,
+  details: `Created event ${event.title}`,
 });
     return res.status(201).json({
       message: "Event created successfully",
@@ -142,7 +149,13 @@ exports.updateEvent = async (req, res) => {
         message: "Event not found",
       });
     }
-
+await logAudit({
+  user: req.user.id,
+  action: "UPDATE",
+  resourceType: "Event",
+  resourceId: event._id,
+  details: `Updated event ${event.title}`,
+});
     return res.status(200).json({
       message: "Event updated successfully",
       event,
@@ -170,9 +183,17 @@ exports.deleteEvent = async (req, res) => {
       event: event._id,
     });
 
-    await event.deleteOne();
+   await event.deleteOne();
 
-    return res.status(200).json({
+await logAudit({
+  user: req.user.id,
+  action: "DELETE",
+  resourceType: "Event",
+  resourceId: event._id,
+  details: `Deleted event ${event.title}`,
+});
+
+return res.status(200).json({
       message: "Event deleted successfully",
     });
   } catch (error) {
