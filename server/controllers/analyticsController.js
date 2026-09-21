@@ -1,6 +1,7 @@
 const Student = require('../models/Student');
 const Event = require('../models/Event');
 const Attendance = require('../models/Attendance');
+const EventRegistration = require('../models/EventRegistration');
 
 exports.getStudentsByDepartment = async (req, res) => {
   try {
@@ -220,6 +221,187 @@ exports.getAttendanceTrend = async (req, res) => {
     return res.status(200).json({
       success: true,
       stats: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// ==============================
+// Course-wise Attendance Analytics
+// ==============================
+
+exports.getCourseAttendance = async (req, res) => {
+  try {
+    const stats = await Attendance.aggregate([
+      {
+        $group: {
+          _id: "$course",
+          totalRecords: { $sum: 1 },
+
+          present: {
+            $sum: {
+              $cond: [
+                { $eq: ["$status", "present"] },
+                1,
+                0,
+              ],
+            },
+          },
+
+          absent: {
+            $sum: {
+              $cond: [
+                { $eq: ["$status", "absent"] },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "courses",
+          localField: "_id",
+          foreignField: "_id",
+          as: "course",
+        },
+      },
+
+      {
+        $unwind: {
+          path: "$course",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $project: {
+          _id: 1,
+
+          courseName: {
+            $ifNull: [
+              "$course.name",
+              "Unknown Course",
+            ],
+          },
+
+          courseCode: {
+            $ifNull: [
+              "$course.code",
+              "Unknown",
+            ],
+          },
+
+          totalRecords: 1,
+          present: 1,
+          absent: 1,
+
+          attendancePercentage: {
+            $cond: [
+              { $gt: ["$totalRecords", 0] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      {
+                        $divide: [
+                          "$present",
+                          "$totalRecords",
+                        ],
+                      },
+                      100,
+                    ],
+                  },
+                  2,
+                ],
+              },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
+        $sort: {
+          courseCode: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      stats,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// ==============================
+// Event Participation Analytics
+// ==============================
+
+exports.getEventParticipation = async (req, res) => {
+  try {
+    const stats = await EventRegistration.aggregate([
+      {
+        $group: {
+          _id: "$event",
+          registrations: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "_id",
+          foreignField: "_id",
+          as: "event",
+        },
+      },
+      {
+        $unwind: {
+          path: "$event",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+
+          eventTitle: {
+            $ifNull: [
+              "$event.title",
+              "Unknown Event",
+            ],
+          },
+
+          registrations: 1,
+        },
+      },
+      {
+        $sort: {
+          registrations: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    const totalRegistrations =
+      await EventRegistration.countDocuments();
+
+    return res.status(200).json({
+      success: true,
+      totalRegistrations,
+      stats,
     });
   } catch (error) {
     return res.status(500).json({

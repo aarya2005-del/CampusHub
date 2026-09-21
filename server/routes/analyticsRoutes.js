@@ -10,6 +10,8 @@ const {
   getEventsPerMonth,
   getOverallAttendance,
   getAttendanceTrend,
+  getCourseAttendance,
+  getEventParticipation,
 } = require('../controllers/analyticsController');
 // Students by Department
 router.get(
@@ -46,5 +48,17 @@ router.get(
   authMiddleware,
   adminMiddleware,
   getAttendanceTrend
+);
+router.get(
+  '/course-attendance',
+  authMiddleware,
+  adminMiddleware,
+  getCourseAttendance
+);
+router.get(
+  '/event-participation',
+  authMiddleware,
+  adminMiddleware,
+  getEventParticipation
 );
 module.exports = router;

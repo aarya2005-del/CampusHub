@@ -60,6 +60,9 @@ function AnalyticsPage() {
     attendancePercentage: 0,
   });
   const [attendanceTrend, setAttendanceTrend] = useState([]);
+  const [courseAttendance, setCourseAttendance] = useState([]);
+  const [eventParticipation, setEventParticipation] = useState([]);
+  const [totalRegistrations, setTotalRegistrations] = useState(0);
   const [eventsYear, setEventsYear] = useState(
     new Date().getFullYear()
   );
@@ -70,18 +73,22 @@ function AnalyticsPage() {
         setLoading(true);
 
         const [
-          departmentResponse,
-          yearResponse,
-          eventsResponse,
-          attendanceResponse,
-          trendResponse,
-        ] = await Promise.all([
-          api.get("/analytics/students-by-department"),
-          api.get("/analytics/students-by-year"),
-          api.get("/analytics/events-per-month"),
-          api.get("/analytics/attendance"),
-          api.get("/analytics/attendance-trend"),
-        ]);
+  departmentResponse,
+  yearResponse,
+  eventsResponse,
+  attendanceResponse,
+  trendResponse,
+  courseAttendanceResponse,
+  participationResponse,
+] = await Promise.all([
+  api.get("/analytics/students-by-department"),
+  api.get("/analytics/students-by-year"),
+  api.get("/analytics/events-per-month"),
+  api.get("/analytics/attendance"),
+  api.get("/analytics/attendance-trend"),
+  api.get("/analytics/course-attendance"),
+  api.get("/analytics/event-participation"),
+]);
 
         setDepartmentData(
           (departmentResponse.data?.stats || []).map(
@@ -134,6 +141,30 @@ function AnalyticsPage() {
             attendance: item.attendance,
           }))
         );
+        setCourseAttendance(
+  (courseAttendanceResponse.data?.stats || []).map(
+    (item) => ({
+      course:
+        item.courseCode || item.courseName || "Unknown",
+      attendance: item.attendancePercentage,
+      present: item.present,
+      absent: item.absent,
+      totalRecords: item.totalRecords,
+    })
+  )
+);
+setEventParticipation(
+  (participationResponse.data?.stats || []).map(
+    (item) => ({
+      event: item.eventTitle,
+      registrations: item.registrations,
+    })
+  )
+);
+
+setTotalRegistrations(
+  participationResponse.data?.totalRegistrations || 0
+);
       } catch (error) {
         toast.error(
           error.response?.data?.message ||
@@ -146,6 +177,7 @@ function AnalyticsPage() {
 
     fetchAnalytics();
   }, []);
+  
 
   const totalStudents = departmentData.reduce(
     (total, item) => total + item.students,
@@ -345,7 +377,103 @@ function AnalyticsPage() {
           </BarChart>
         </ResponsiveContainer>
       </ChartCard>
+      {/* Course-wise Attendance */}
+<div className="mt-6">
+  <ChartCard
+    title="Course-wise Attendance"
+    subtitle="Attendance percentage across subjects"
+  >
+    {courseAttendance.length === 0 ? (
+      <EmptyChart />
+    ) : (
+      <ResponsiveContainer
+        width="100%"
+        height={320}
+      >
+        <BarChart data={courseAttendance}>
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#1e293b"
+          />
 
+          <XAxis
+            dataKey="course"
+            stroke="#94a3b8"
+            tick={{ fontSize: 12 }}
+          />
+
+          <YAxis
+            domain={[0, 100]}
+            stroke="#94a3b8"
+            unit="%"
+          />
+
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#0f172a",
+              border: "1px solid #334155",
+              borderRadius: "12px",
+            }}
+          />
+
+          <Bar
+            dataKey="attendance"
+            fill="#06b6d4"
+            radius={[8, 8, 0, 0]}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    )}
+  </ChartCard>
+</div>
+{/* Event Participation */}
+<div className="mt-6">
+  <ChartCard
+    title="Event Participation"
+    subtitle={`${totalRegistrations} total student registrations across campus events`}
+  >
+    {eventParticipation.length === 0 ? (
+      <EmptyChart />
+    ) : (
+      <ResponsiveContainer
+        width="100%"
+        height={320}
+      >
+        <BarChart data={eventParticipation}>
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#1e293b"
+          />
+
+          <XAxis
+            dataKey="event"
+            stroke="#94a3b8"
+            tick={{ fontSize: 12 }}
+          />
+
+          <YAxis
+            stroke="#94a3b8"
+            allowDecimals={false}
+          />
+
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#0f172a",
+              border: "1px solid #334155",
+              borderRadius: "12px",
+            }}
+          />
+
+          <Bar
+            dataKey="registrations"
+            fill="#8b5cf6"
+            radius={[8, 8, 0, 0]}
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    )}
+  </ChartCard>
+</div>
       {/* Attendance */}
       <div className="grid xl:grid-cols-3 gap-6 mt-6">
         <div className="xl:col-span-2">
