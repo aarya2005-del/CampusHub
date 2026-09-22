@@ -60,10 +60,18 @@ expiresIn: '7d',
 );
 
 return successResponse(
-res,
-201,
-'User Registered Successfully',
-{ token, user }
+  res,
+  201,
+  'User Registered Successfully',
+  {
+    token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  }
 );
 });
 
@@ -116,10 +124,18 @@ expiresIn: '7d',
 );
 
 return successResponse(
-res,
-200,
-'Login Successful',
-{ token, user }
+  res,
+  200,
+  'Login Successful',
+  {
+    token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  }
 );
 });
 
