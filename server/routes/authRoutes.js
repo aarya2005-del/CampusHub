@@ -4,11 +4,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
 const {
-  register,
   login,
   createStudentAccount,
 } = require('../controllers/authController');
-
 /**
  * @swagger
  * /api/auth/login:
@@ -31,7 +29,7 @@ router.post('/login', login);
  *       201:
  *         description: Created
  */
-router.post('/register', register);
+
 router.post(
   '/create-student-account',
   authMiddleware,

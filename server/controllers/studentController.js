@@ -1,4 +1,5 @@
 const Student = require("../models/Student");
+const User = require("../models/User");
 const Attendance = require("../models/Attendance");
 const EventRegistration = require("../models/EventRegistration");
 const logAudit = require("../utils/auditLogger");
@@ -246,8 +247,13 @@ exports.deleteStudent = async (req, res) => {
       student: student._id,
     });
 
-    // Delete student
-   // Delete student
+    
+// Delete linked login account, if one exists
+if (student.user) {
+  await User.findByIdAndDelete(student.user);
+}
+
+// Delete student
 await student.deleteOne();
 
 await logAudit({
