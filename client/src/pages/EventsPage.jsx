@@ -97,9 +97,12 @@ const [removingRegistrationId, setRemovingRegistrationId] = useState(null);
   };
 
   useEffect(() => {
-    fetchEvents();
+  fetchEvents();
+
+  if (isAdmin) {
     fetchEventAnalytics();
-  }, []);
+  }
+}, []);
 
   // ================= FORM =================
   const handleChange = (event) => {
