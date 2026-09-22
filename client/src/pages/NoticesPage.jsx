@@ -13,6 +13,11 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 
 function NoticesPage() {
+    const currentUser = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
+
+  const isAdmin = currentUser.role === "admin";
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -175,13 +180,15 @@ function NoticesPage() {
           </p>
         </div>
 
-        <button
-          onClick={openCreateForm}
-          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold transition"
-        >
-          <Plus size={20} />
-          Publish Notice
-        </button>
+       {isAdmin && (
+  <button
+    onClick={openCreateForm}
+    className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold transition"
+  >
+    <Plus size={20} />
+    Publish Notice
+  </button>
+)}
       </div>
 
       {/* Summary */}
@@ -297,27 +304,29 @@ function NoticesPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() =>
-                      openEditForm(notice)
-                    }
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 font-semibold"
-                  >
-                    <Pencil size={16} />
-                    Edit
-                  </button>
+                {isAdmin && (
+  <div className="flex items-center gap-3">
+    <button
+      onClick={() =>
+        openEditForm(notice)
+      }
+      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 font-semibold"
+    >
+      <Pencil size={16} />
+      Edit
+    </button>
 
-                  <button
-                    onClick={() =>
-                      setNoticeToDelete(notice)
-                    }
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 font-semibold"
-                  >
-                    <Trash2 size={16} />
-                    Delete
-                  </button>
-                </div>
+    <button
+      onClick={() =>
+        setNoticeToDelete(notice)
+      }
+      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 font-semibold"
+    >
+      <Trash2 size={16} />
+      Delete
+    </button>
+  </div>
+)}
               </div>
             </div>
           ))}

@@ -13,6 +13,11 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 
 function EventsPage() {
+    const currentUser = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
+
+  const isAdmin = currentUser.role === "admin";
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -406,13 +411,15 @@ const handleRemoveParticipant = async (registrationId) => {
           </p>
         </div>
 
-        <button
-          onClick={openCreateForm}
-          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold transition"
-        >
-          <Plus size={20} />
-          Create Event
-        </button>
+        {isAdmin && (
+  <button
+    onClick={openCreateForm}
+    className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold transition"
+  >
+    <Plus size={20} />
+    Create Event
+  </button>
+)}
       </div>
 
       {/* Event Count */}
@@ -591,50 +598,53 @@ const handleRemoveParticipant = async (registrationId) => {
                 </div>
 
                 {/* Event Actions */}
-                <div className="mt-6 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-4">
-                  <button
-                    onClick={() =>
-                      openRegistrationModal(
-                        event
-                      )
-                    }
-                    disabled={isFull}
-                    className="flex items-center gap-2 text-sm text-green-400 hover:text-green-300 font-semibold disabled:text-slate-600 disabled:cursor-not-allowed"
-                  >
-                    <Users size={16} />
+{isAdmin && (
+  <div className="mt-6 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-4">
+    <button
+      onClick={() =>
+        openRegistrationModal(event)
+      }
+      disabled={isFull}
+      className="flex items-center gap-2 text-sm text-green-400 hover:text-green-300 font-semibold disabled:text-slate-600 disabled:cursor-not-allowed"
+    >
+      <Users size={16} />
 
-                    {isFull
-                      ? "Event Full"
-                      : "Register Student"}
-                  </button>
-                  <button
-  onClick={() => openParticipantsModal(event)}
-  className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-semibold"
->
-  <Users size={16} />
-  Participants
-</button>
+      {isFull
+        ? "Event Full"
+        : "Register Student"}
+    </button>
 
-                  <button
-                    onClick={() =>
-                      openEditForm(event)
-                    }
-                    className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-semibold"
-                  >
-                    <Pencil size={16} />
-                    Edit
-                  </button>
+    <button
+      onClick={() =>
+        openParticipantsModal(event)
+      }
+      className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 font-semibold"
+    >
+      <Users size={16} />
+      Participants
+    </button>
 
-                  <button
-                    onClick={() =>
-                      setEventToDelete(event)
-                    }
-                    className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-semibold ml-auto"
-                  >
-                    <Trash2 size={16} />
-                    Delete
-                  </button>
-                </div>
+    <button
+      onClick={() =>
+        openEditForm(event)
+      }
+      className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-semibold"
+    >
+      <Pencil size={16} />
+      Edit
+    </button>
+
+    <button
+      onClick={() =>
+        setEventToDelete(event)
+      }
+      className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 font-semibold ml-auto"
+    >
+      <Trash2 size={16} />
+      Delete
+    </button>
+  </div>
+)}
               </div>
             );
           })}
