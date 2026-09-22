@@ -16,6 +16,14 @@ import {
   Settings,
   User,
   LogOut,
+  BookOpen,
+  CalendarDays,
+  FileText,
+  GraduationCap,
+  CreditCard,
+  PackageSearch,
+  ClipboardList,
+  ShieldCheck,
 } from "lucide-react";
 
 function DashboardLayout({ children }) {
@@ -108,9 +116,9 @@ useEffect(() => {
     path: "/students",
   },
   {
-    title: "Events",
-    icon: <Calendar size={20} />,
-    path: "/events",
+    title: "Courses",
+    icon: <BookOpen size={20} />,
+    path: "/courses",
   },
   {
     title: "Attendance",
@@ -118,14 +126,131 @@ useEffect(() => {
     path: "/attendance",
   },
   {
-    title: "Analytics",
-    icon: <BarChart3 size={20} />,
-    path: "/analytics",
+    title: "Timetable",
+    icon: <CalendarDays size={20} />,
+    path: "/timetable",
+  },
+  {
+    title: "Exams",
+    icon: <FileText size={20} />,
+    path: "/exams",
+  },
+  {
+    title: "Results",
+    icon: <GraduationCap size={20} />,
+    path: "/results",
+  },
+  {
+    title: "Fees",
+    icon: <CreditCard size={20} />,
+    path: "/fees",
+  },
+  {
+    title: "Assignments",
+    icon: <ClipboardList size={20} />,
+    path: "/assignments",
+  },
+  {
+    title: "Events",
+    icon: <Calendar size={20} />,
+    path: "/events",
   },
   {
     title: "Notices",
     icon: <Bell size={20} />,
     path: "/notices",
+  },
+  {
+    title: "Lost & Found",
+    icon: <PackageSearch size={20} />,
+    path: "/lost-found",
+  },
+  {
+    title: "Analytics",
+    icon: <BarChart3 size={20} />,
+    path: "/analytics",
+  },
+  {
+    title: "Reports",
+    icon: <FileText size={20} />,
+    path: "/reports",
+  },
+  {
+    title: "Audit Logs",
+    icon: <ShieldCheck size={20} />,
+    path: "/audit-logs",
+  },
+  {
+    title: "Profile",
+    icon: <User size={20} />,
+    path: "/profile",
+  },
+  {
+    title: "Settings",
+    icon: <Settings size={20} />,
+    path: "/settings",
+  },
+];
+const studentMenuItems = [
+  {
+    title: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+    path: "/dashboard",
+  },
+  {
+    title: "My Attendance",
+    icon: <ClipboardCheck size={20} />,
+    path: "/my-attendance",
+  },
+  {
+    title: "Timetable",
+    icon: <CalendarDays size={20} />,
+    path: "/my-timetable",
+  },
+  {
+  title: "Planner",
+  icon: <Calendar size={20} />,
+  path: "/my-planner",
+},
+  {
+    title: "Exams",
+    icon: <FileText size={20} />,
+    path: "/my-exams",
+  },
+  {
+    title: "Results",
+    icon: <GraduationCap size={20} />,
+    path: "/my-results",
+  },
+ {
+  title: "Admit Card",
+  icon: <FileText size={20} />,
+  path: "/my-admit-card",
+},
+  {
+    title: "Fees",
+    icon: <CreditCard size={20} />,
+    path: "/my-fees",
+  },
+  {
+    title: "Assignments",
+    icon: <ClipboardList size={20} />,
+    path: "/my-assignments",
+  },
+  {
+    title: "Events",
+    icon: <Calendar size={20} />,
+    path: "/events",
+  },
+  {
+    title: "Notices",
+    icon: <Bell size={20} />,
+    path: "/notices",
+  },
+  {
+    title: "Lost & Found",
+    icon: <PackageSearch size={20} />,
+    path: "/lost-found",
   },
   {
     title: "Profile",
@@ -139,7 +264,45 @@ useEffect(() => {
   },
 ];
 
-const studentMenuItems = [
+const facultyMenuItems = [
+  {
+    title: "Dashboard",
+    icon: <LayoutDashboard size={20} />,
+    path: "/dashboard",
+  },
+  {
+    title: "Assignments",
+    icon: <ClipboardList size={20} />,
+    path: "/assignments",
+  },
+  {
+    title: "Events",
+    icon: <Calendar size={20} />,
+    path: "/events",
+  },
+  {
+    title: "Notices",
+    icon: <Bell size={20} />,
+    path: "/notices",
+  },
+  {
+    title: "Lost & Found",
+    icon: <PackageSearch size={20} />,
+    path: "/lost-found",
+  },
+  {
+    title: "Profile",
+    icon: <User size={20} />,
+    path: "/profile",
+  },
+  {
+    title: "Settings",
+    icon: <Settings size={20} />,
+    path: "/settings",
+  },
+];
+
+const staffMenuItems = [
   {
     title: "Dashboard",
     icon: <LayoutDashboard size={20} />,
@@ -156,6 +319,11 @@ const studentMenuItems = [
     path: "/notices",
   },
   {
+    title: "Lost & Found",
+    icon: <PackageSearch size={20} />,
+    path: "/lost-found",
+  },
+  {
     title: "Profile",
     icon: <User size={20} />,
     path: "/profile",
@@ -166,15 +334,18 @@ const studentMenuItems = [
     path: "/settings",
   },
 ];
-
 const menuItems =
   user.role === "admin"
     ? adminMenuItems
+    : user.role === "faculty"
+    ? facultyMenuItems
+    : user.role === "staff"
+    ? staffMenuItems
     : studentMenuItems;
   return (
     <div className="min-h-screen bg-[#070B1A] text-white flex">
       {/* Sidebar */}
-      <aside className="w-72 bg-white/5 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col">
+      <aside className="w-72 h-screen bg-white/5 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col overflow-y-auto">
         {/* Logo */}
         <div className="mb-10">
           <h1 className="text-3xl font-black tracking-tight">

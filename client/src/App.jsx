@@ -148,7 +148,9 @@ function App() {
   path="/audit-logs"
   element={
     <RoleRoute allowedRoles={["admin"]}>
-      <AuditLogsPage />
+      <DashboardLayout>
+        <AuditLogsPage />
+      </DashboardLayout>
     </RoleRoute>
   }
 />
@@ -257,15 +259,15 @@ function App() {
 
         {/* Analytics */}
         <Route
-          path="/analytics"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <AnalyticsPage />
-              </DashboardLayout>
-            </ProtectedRoute>
-          }
-        />
+  path="/analytics"
+  element={
+    <RoleRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <AnalyticsPage />
+      </DashboardLayout>
+    </RoleRoute>
+  }
+/>
 
         {/* Notices */}
         <Route
