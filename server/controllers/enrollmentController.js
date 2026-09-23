@@ -58,10 +58,16 @@ exports.enrollStudent = async (req, res) => {
       enrollment: populatedEnrollment,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: error.message,
+  if (error.code === 11000) {
+    return res.status(409).json({
+      message: "Student is already enrolled in this course",
     });
   }
+
+  return res.status(500).json({
+    message: error.message,
+  });
+}
 };
 
 // Get Course Enrollments - Admin
