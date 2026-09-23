@@ -16,7 +16,13 @@ const errorMiddleware = (err, req, res, next) => {
       message: err.message,
     });
   }
-
+// Invalid MongoDB ObjectId
+if (err.name === 'CastError' && err.kind === 'ObjectId') {
+  return res.status(400).json({
+    success: false,
+    message: 'Invalid resource ID',
+  });
+}
   // Generic error
   return res.status(err.statusCode || 500).json({
     success: false,

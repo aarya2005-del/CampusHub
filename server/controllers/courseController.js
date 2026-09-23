@@ -87,7 +87,7 @@ exports.getAllCourses = async (req, res) => {
 };
 
 // Get Course By ID
-exports.getCourseById = async (req, res) => {
+exports.getCourseById = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id).populate(
       "createdBy",
@@ -103,11 +103,9 @@ exports.getCourseById = async (req, res) => {
     return res.status(200).json({
       course,
     });
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
+ } catch (error) {
+  return next(error);
+}
 };
 
 // Update Course
