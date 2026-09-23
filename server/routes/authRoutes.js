@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
+const { loginLimiter } = require('../middleware/rateLimiter');
 
 const {
   login,
@@ -17,7 +18,7 @@ const {
  *       200:
  *         description: Success
  */
-router.post('/login', login);
+router.post('/login', loginLimiter, login);
 
 /**
  * @swagger
