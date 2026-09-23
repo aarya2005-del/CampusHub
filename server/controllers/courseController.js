@@ -1,4 +1,9 @@
 const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
+const Attendance = require("../models/Attendance");
+const Exam = require("../models/Exam");
+const Assignment = require("../models/Assignment");
+const Timetable = require("../models/Timetable");
 const logAudit = require("../utils/auditLogger");
 
 // Create Course
@@ -168,13 +173,62 @@ exports.deleteCourse = async (req, res) => {
     const course = await Course.findById(req.params.id);
 
     if (!course) {
-      return res.status(404).json({
-        message: "Course not found",
-      });
-    }
+  return res.status(404).json({
+    message: "Course not found",
+  });
+}
 
-    await course.deleteOne();
+const enrollmentCount = await Enrollment.countDocuments({
+  course: course._id,
+});
 
+if (enrollmentCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this course because students are enrolled in it.",
+  });
+}
+const attendanceCount = await Attendance.countDocuments({
+  course: course._id,
+});
+
+if (attendanceCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this course because attendance records exist for it.",
+  });
+}
+const examCount = await Exam.countDocuments({
+  course: course._id,
+});
+
+if (examCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this course because exam records exist for it.",
+  });
+}
+const assignmentCount = await Assignment.countDocuments({
+  course: course._id,
+});
+
+if (assignmentCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this course because assignments exist for it.",
+  });
+}
+const timetableCount = await Timetable.countDocuments({
+  course: course._id,
+});
+
+if (timetableCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this course because timetable entries exist for it.",
+  });
+}
+await course.deleteOne();
 await logAudit({
   user: req.user.id,
   action: "DELETE",
