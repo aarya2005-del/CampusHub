@@ -3,7 +3,11 @@ const User = require("../models/User");
 const Attendance = require("../models/Attendance");
 const EventRegistration = require("../models/EventRegistration");
 const logAudit = require("../utils/auditLogger");
-
+const Fee = require("../models/Fee");
+const Result = require("../models/Result");
+const AssignmentSubmission = require("../models/AssignmentSubmission");
+const Enrollment = require("../models/Enrollment");
+const Planner = require("../models/Planner");
 // Create Student
 exports.createStudent = async (req, res) => {
   try {
@@ -149,6 +153,7 @@ exports.getStudentById = async (req, res) => {
         message: "Student not found",
       });
     }
+   
 
     return res.status(200).json({
       student,
@@ -236,6 +241,44 @@ exports.deleteStudent = async (req, res) => {
         message: "Student not found",
       });
     }
+    const feeCount = await Fee.countDocuments({
+  student: student._id,
+});
+
+if (feeCount > 0) {
+  return res.status(409).json({
+    message: "Cannot delete this student because fee records exist for them.",
+  });
+}
+const resultCount = await Result.countDocuments({
+  student: student._id,
+});
+
+if (resultCount > 0) {
+  return res.status(409).json({
+    message: "Cannot delete this student because result records exist for them.",
+  });
+}
+
+const submissionCount = await AssignmentSubmission.countDocuments({
+  student: student._id,
+});
+
+if (submissionCount > 0) {
+  return res.status(409).json({
+    message:
+      "Cannot delete this student because assignment submissions exist for them.",
+  });
+}
+const enrollmentCount = await Enrollment.countDocuments({
+  student: student._id,
+});
+
+if (enrollmentCount > 0) {
+  return res.status(409).json({
+    message: "Cannot delete this student because enrollment records exist for them.",
+  });
+}
 
     // Remove related attendance records
     await Attendance.deleteMany({
@@ -246,6 +289,10 @@ exports.deleteStudent = async (req, res) => {
     await EventRegistration.deleteMany({
       student: student._id,
     });
+    // Remove personal planner entries
+await Planner.deleteMany({
+  student: student._id,
+});
 
     
 // Delete linked login account, if one exists
