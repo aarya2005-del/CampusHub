@@ -42,6 +42,13 @@ exports.createAssignment = async (req, res) => {
         message: "Maximum marks must be at least 1",
       });
     }
+    const assignmentStatus = status || "Published";
+
+if (!["Draft", "Published"].includes(assignmentStatus)) {
+  return res.status(400).json({
+    message: "Status must be Draft or Published",
+  });
+}
 
     const assignment = await Assignment.create({
       course: courseId,
@@ -49,7 +56,7 @@ exports.createAssignment = async (req, res) => {
       description,
       dueDate,
       maxMarks: marks,
-      status: status || "Published",
+      status: assignmentStatus,
       createdBy: req.user.id,
     });
 
