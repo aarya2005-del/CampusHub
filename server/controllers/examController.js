@@ -2,6 +2,7 @@ const Exam = require("../models/Exam");
 const Course = require("../models/Course");
 const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
+const Result = require("../models/Result");
 
 // ================= CREATE EXAM =================
 exports.createExam = async (req, res) => {
@@ -160,7 +161,15 @@ exports.deleteExam = async (req, res) => {
         message: "Exam not found",
       });
     }
+const resultCount = await Result.countDocuments({
+  exam: exam._id,
+});
 
+if (resultCount > 0) {
+  return res.status(409).json({
+    message: "Cannot delete this exam because result records exist for it.",
+  });
+}
     await exam.deleteOne();
 
     return res.status(200).json({
