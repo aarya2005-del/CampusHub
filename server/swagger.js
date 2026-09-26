@@ -9,11 +9,15 @@ const options = {
       version: '1.0.0',
       description: 'CampusHub Backend API',
     },
-    servers: [
-      {
-        url: 'http://localhost:5000',
-      },
-    ],
+   servers: [
+  {
+    url: process.env.SERVER_URL || 'http://localhost:5000',
+    description:
+      process.env.NODE_ENV === 'production'
+        ? 'Production server'
+        : 'Development server',
+  },
+],
   },
 
   // IMPORTANT: use absolute pattern from project root
