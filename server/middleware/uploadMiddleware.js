@@ -1,46 +1,69 @@
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('../config/cloudinary');
+const multer = require("multer");
+const cloudinary = require("../config/cloudinary");
 
-// Cloudinary storage configuration
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'campushub',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    transformation: [
-      {
-        width: 500,
-        height: 500,
-        crop: 'limit',
-      },
-    ],
-  },
-});
+const storage = multer.memoryStorage();
 
-// File filter
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/webp',
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
   ];
 
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed'), false);
+    cb(new Error("Only image files are allowed"), false);
   }
 };
 
-// Multer upload middleware
-const upload = multer({
+const memoryUpload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB
+    fileSize: 2 * 1024 * 1024,
   },
 });
 
-module.exports = upload;
+const uploadToCloudinary = (req, res, next) => {
+  memoryUpload.single("image")(req, res, (error) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (!req.file) {
+      return next();
+    }
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "campushub",
+        resource_type: "image",
+        transformation: [
+          {
+            width: 500,
+            height: 500,
+            crop: "limit",
+          },
+        ],
+      },
+      (uploadError, result) => {
+        if (uploadError) {
+          return next(uploadError);
+        }
+
+        req.file.path = result.secure_url;
+        req.file.filename = result.public_id;
+
+        next();
+      }
+    );
+
+    uploadStream.end(req.file.buffer);
+  });
+};
+
+module.exports = {
+  single: () => uploadToCloudinary,
+};

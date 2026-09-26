@@ -1,26 +1,7 @@
 const multer = require("multer");
-
-const {
-  CloudinaryStorage,
-} = require("multer-storage-cloudinary");
-
 const cloudinary = require("../config/cloudinary");
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-
-  params: async (req, file) => {
-    const isPdf = file.mimetype === "application/pdf";
-
-    return {
-      folder: "campushub/assignments",
-      resource_type: isPdf ? "raw" : "auto",
-      public_id: `${Date.now()}-${file.originalname
-        .replace(/\.[^/.]+$/, "")
-        .replace(/[^a-zA-Z0-9-_]/g, "-")}`,
-    };
-  },
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
@@ -42,7 +23,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const assignmentUpload = multer({
+const memoryUpload = multer({
   storage,
   fileFilter,
   limits: {
@@ -50,4 +31,44 @@ const assignmentUpload = multer({
   },
 });
 
-module.exports = assignmentUpload;
+const assignmentUpload = (req, res, next) => {
+  memoryUpload.single("file")(req, res, (error) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (!req.file) {
+      return next();
+    }
+
+    const isPdf = req.file.mimetype === "application/pdf";
+
+    const originalName = req.file.originalname
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[^a-zA-Z0-9-_]/g, "-");
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "campushub/assignments",
+        resource_type: isPdf ? "raw" : "image",
+        public_id: `${Date.now()}-${originalName}`,
+      },
+      (uploadError, result) => {
+        if (uploadError) {
+          return next(uploadError);
+        }
+
+        req.file.path = result.secure_url;
+        req.file.filename = result.public_id;
+
+        next();
+      }
+    );
+
+    uploadStream.end(req.file.buffer);
+  });
+};
+
+module.exports = {
+  single: () => assignmentUpload,
+};
