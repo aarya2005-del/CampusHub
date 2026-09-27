@@ -8,6 +8,8 @@ import api from "../services/api";
 import {
   LayoutDashboard,
   Users,
+  Menu,
+  X,
   Calendar,
   ClipboardCheck,
   BarChart3,
@@ -32,8 +34,9 @@ function DashboardLayout({ children }) {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-const [searchResults, setSearchResults] = useState({
+  const [searchResults, setSearchResults] = useState({
   students: [],
   events: [],
   notices: [],
@@ -99,6 +102,9 @@ useEffect(() => {
 
   return () => clearTimeout(timer);
 }, [searchQuery]);
+useEffect(() => {
+  setSidebarOpen(false);
+}, [location.pathname]);
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -343,10 +349,45 @@ const menuItems =
     ? staffMenuItems
     : studentMenuItems;
   return (
-    <div className="min-h-screen bg-[#070B1A] text-white flex">
-      {/* Sidebar */}
-      <aside className="w-72 h-screen bg-white/5 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col overflow-y-auto">
-        {/* Logo */}
+    <div className="min-h-screen bg-[#070B1A] text-white flex overflow-x-hidden">
+
+  {/* Mobile sidebar overlay */}
+  {sidebarOpen && (
+    <button
+      type="button"
+      aria-label="Close navigation"
+      onClick={() => setSidebarOpen(false)}
+      className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+    />
+  )}
+
+  {/* Sidebar */}
+  <aside
+    className={`
+      fixed lg:sticky
+      top-0 left-0 z-50
+      w-72 h-screen
+      bg-[#0D1224] lg:bg-white/5
+      backdrop-blur-xl
+      border-r border-white/10
+      p-6
+      flex flex-col
+      overflow-y-auto
+      transition-transform duration-300 ease-in-out
+      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      lg:translate-x-0
+      shrink-0
+    `}
+  >
+    {/* Mobile close button */}
+    <button
+      type="button"
+      onClick={() => setSidebarOpen(false)}
+      className="lg:hidden absolute top-5 right-5 p-2 rounded-xl bg-white/10 text-slate-300 hover:text-white"
+      aria-label="Close menu"
+    >
+      <X size={22} />
+    </button>
         <div className="mb-10">
           <h1 className="text-3xl font-black tracking-tight">
             Campus<span className="text-blue-400">Hub</span>
@@ -405,11 +446,19 @@ const menuItems =
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 min-w-0 w-full overflow-x-hidden">
         {/* Top Navbar */}
-        <header className="sticky top-0 z-10 bg-[#070B1A]/80 backdrop-blur-xl border-b border-white/10 px-8 py-5">
-          <div className="flex items-center justify-between">
-            {/* Search */}
+        <header className="sticky top-0 z-30 bg-[#070B1A]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 lg:px-8 py-4 lg:py-5">
+          <div className="flex items-center gap-3">
+            <button
+  type="button"
+  onClick={() => setSidebarOpen(true)}
+  className="lg:hidden shrink-0 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10"
+  aria-label="Open menu"
+>
+  <Menu size={22} />
+</button>
+            
             {/* Search */}
 <div className="relative w-full max-w-xl">
   <Search
@@ -428,7 +477,7 @@ const menuItems =
         setShowSearchResults(true);
       }
     }}
-    placeholder="Search students, events, notices..."
+    placeholder="Search..."
     className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
   />
 
@@ -529,7 +578,7 @@ const menuItems =
 </div>
 
             {/* Right Side */}
-            <div className="flex items-center gap-4 ml-6">
+            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
               <button
   type="button"
   onClick={() => navigate("/notifications")}
@@ -544,7 +593,7 @@ const menuItems =
     </span>
   )}
 </button>
-              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-2">
+              <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-2">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center font-bold">
                   {user?.name?.charAt(0) || "U"}
                 </div>
@@ -564,7 +613,9 @@ const menuItems =
         </header>
 
         {/* Page Content */}
-        <div className="p-8">{children}</div>
+        <div className="p-4 sm:p-6 lg:p-8 w-full min-w-0">
+  {children}
+</div>
       </main>
     </div>
   );
