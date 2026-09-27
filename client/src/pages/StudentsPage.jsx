@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -276,34 +277,35 @@ const handleCreateLogin = async (event) => {
             className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
           />
 
-          <select
-            value={year}
-            onChange={(event) => {
-              setYear(event.target.value);
-              setPage(1);
-            }}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            <option value="">All Years</option>
-            <option value="1">Year 1</option>
-            <option value="2">Year 2</option>
-            <option value="3">Year 3</option>
-            <option value="4">Year 4</option>
-          </select>
+          <CustomSelect
+  value={year}
+  placeholder="All Years"
+  options={[
+    { value: "", label: "All Years" },
+    { value: "1", label: "Year 1" },
+    { value: "2", label: "Year 2" },
+    { value: "3", label: "Year 3" },
+    { value: "4", label: "Year 4" },
+  ]}
+  onChange={(event) => {
+    setYear(event.target.value);
+    setPage(1);
+  }}
+/>
 
-          <select
-            value={sort}
-            onChange={(event) => {
-              setSort(event.target.value);
-              setPage(1);
-            }}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="az">Name A–Z</option>
-            <option value="za">Name Z–A</option>
-          </select>
+          <CustomSelect
+  value={sort}
+  options={[
+    { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
+    { value: "az", label: "Name A–Z" },
+    { value: "za", label: "Name Z–A" },
+  ]}
+  onChange={(event) => {
+    setSort(event.target.value);
+    setPage(1);
+  }}
+/>
         </div>
 
         {(search || department || year || sort !== "newest") && (
@@ -541,22 +543,24 @@ const handleCreateLogin = async (event) => {
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
               />
 
-              <select
-                required
-                name="year"
-                value={form.year}
-                onChange={handleChange}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-              >
-                <option value="">
-                  Select academic year
-                </option>
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
-              </select>
-
+              <CustomSelect
+  value={form.year}
+  placeholder="Select academic year"
+  options={[
+    { value: "1", label: "Year 1" },
+    { value: "2", label: "Year 2" },
+    { value: "3", label: "Year 3" },
+    { value: "4", label: "Year 4" },
+  ]}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "year",
+        value: event.target.value,
+      },
+    })
+  }
+/>
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"

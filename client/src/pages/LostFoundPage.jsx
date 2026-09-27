@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CustomSelect from "../components/CustomSelect";
 import toast from "react-hot-toast";
 import api from "../services/api";
 
@@ -168,19 +169,19 @@ await api.post("/lost-found", formData);
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <select
-            value={form.type}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                type: e.target.value,
-              })
-            }
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-          >
-            <option value="Lost">Lost</option>
-            <option value="Found">Found</option>
-          </select>
+          <CustomSelect
+  value={form.type}
+  options={[
+    { value: "Lost", label: "Lost" },
+    { value: "Found", label: "Found" },
+  ]}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      type: e.target.value,
+    })
+  }
+/>
 
           <input
             value={form.itemName}
@@ -195,25 +196,25 @@ await api.post("/lost-found", formData);
             className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
           />
 
-          <select
-            value={form.category}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                category: e.target.value,
-              })
-            }
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-          >
-            <option value="Electronics">Electronics</option>
-            <option value="ID Card">ID Card</option>
-            <option value="Books">Books</option>
-            <option value="Keys">Keys</option>
-            <option value="Wallet">Wallet</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Other">Other</option>
-          </select>
+          <CustomSelect
+  value={form.category}
+  options={[
+    { value: "Electronics", label: "Electronics" },
+    { value: "ID Card", label: "ID Card" },
+    { value: "Books", label: "Books" },
+    { value: "Keys", label: "Keys" },
+    { value: "Wallet", label: "Wallet" },
+    { value: "Clothing", label: "Clothing" },
+    { value: "Accessories", label: "Accessories" },
+    { value: "Other", label: "Other" },
+  ]}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      category: e.target.value,
+    })
+  }
+/>
 
           <input
             value={form.location}
@@ -313,40 +314,46 @@ await api.post("/lost-found", formData);
     className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
   />
 
-  <select
-    value={typeFilter}
-    onChange={(e) => setTypeFilter(e.target.value)}
-    className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-  >
-    <option value="All">All Types</option>
-    <option value="Lost">Lost</option>
-    <option value="Found">Found</option>
-  </select>
-  <select
+  <CustomSelect
+  value={typeFilter}
+  options={[
+    { value: "All", label: "All Types" },
+    { value: "Lost", label: "Lost" },
+    { value: "Found", label: "Found" },
+  ]}
+  onChange={(e) =>
+    setTypeFilter(e.target.value)
+  }
+/>
+  <CustomSelect
   value={categoryFilter}
-  onChange={(e) => setCategoryFilter(e.target.value)}
-  className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
->
-  <option value="All">All Categories</option>
-  <option value="Electronics">Electronics</option>
-  <option value="ID Card">ID Card</option>
-  <option value="Books">Books</option>
-  <option value="Keys">Keys</option>
-  <option value="Wallet">Wallet</option>
-  <option value="Clothing">Clothing</option>
-  <option value="Accessories">Accessories</option>
-  <option value="Other">Other</option>
-</select>
+  options={[
+    { value: "All", label: "All Categories" },
+    { value: "Electronics", label: "Electronics" },
+    { value: "ID Card", label: "ID Card" },
+    { value: "Books", label: "Books" },
+    { value: "Keys", label: "Keys" },
+    { value: "Wallet", label: "Wallet" },
+    { value: "Clothing", label: "Clothing" },
+    { value: "Accessories", label: "Accessories" },
+    { value: "Other", label: "Other" },
+  ]}
+  onChange={(e) =>
+    setCategoryFilter(e.target.value)
+  }
+/>
 
-  <select
-    value={statusFilter}
-    onChange={(e) => setStatusFilter(e.target.value)}
-    className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-  >
-    <option value="All">All Statuses</option>
-    <option value="Open">Open</option>
-    <option value="Resolved">Resolved</option>
-  </select>
+ <CustomSelect
+  value={statusFilter}
+  options={[
+    { value: "All", label: "All Statuses" },
+    { value: "Open", label: "Open" },
+    { value: "Resolved", label: "Resolved" },
+  ]}
+  onChange={(e) =>
+    setStatusFilter(e.target.value)
+  }
+/>
 </div>
 
         {loading ? (

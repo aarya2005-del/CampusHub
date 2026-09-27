@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   CreditCard,
@@ -166,29 +167,20 @@ function FeesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
-          <select
-            value={form.studentId}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                studentId: e.target.value,
-              })
-            }
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-          >
-            <option value="">Select Student</option>
-
-            {students.map((student) => (
-              <option
-                key={student._id}
-                value={student._id}
-              >
-                {student.name} ({student.rollNumber})
-              </option>
-            ))}
-          </select>
-
+          <CustomSelect
+  value={form.studentId}
+  placeholder="Select Student"
+  options={students.map((student) => ({
+    value: student._id,
+    label: `${student.name} (${student.rollNumber})`,
+  }))}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      studentId: e.target.value,
+    })
+  }
+/>
           <input
             value={form.academicYear}
             onChange={(e) =>
@@ -217,28 +209,25 @@ function FeesPage() {
             required
             className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
           />
-          <select
+          <CustomSelect
   value={form.feeType}
+  placeholder="Select Fee Type"
+  options={[
+    { value: "Tuition", label: "Tuition" },
+    { value: "Hostel", label: "Hostel" },
+    { value: "Transportation", label: "Transportation" },
+    { value: "Examination", label: "Examination" },
+    { value: "Library", label: "Library" },
+    { value: "Laboratory", label: "Laboratory" },
+    { value: "Other", label: "Other" },
+  ]}
   onChange={(e) =>
     setForm({
       ...form,
       feeType: e.target.value,
     })
   }
-  required
-  className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
->
-  <option value="Tuition">Tuition</option>
-  <option value="Hostel">Hostel</option>
-  <option value="Transportation">
-    Transportation
-  </option>
-  <option value="Examination">Examination</option>
-  <option value="Library">Library</option>
-  <option value="Laboratory">Laboratory</option>
-  <option value="Other">Other</option>
-</select>
-
+/>
           <input
             type="number"
             min="0"
@@ -464,22 +453,23 @@ function FeesPage() {
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
               />
 
-              <select
-                value={paymentForm.paymentMethod}
-                onChange={(e) =>
-                  setPaymentForm({
-                    ...paymentForm,
-                    paymentMethod: e.target.value,
-                  })
-                }
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-              >
-                <option>UPI</option>
-                <option>Cash</option>
-                <option>Card</option>
-                <option>Bank Transfer</option>
-                <option>Other</option>
-              </select>
+             <CustomSelect
+  value={paymentForm.paymentMethod}
+  placeholder="Select Payment Method"
+  options={[
+    { value: "UPI", label: "UPI" },
+    { value: "Cash", label: "Cash" },
+    { value: "Card", label: "Card" },
+    { value: "Bank Transfer", label: "Bank Transfer" },
+    { value: "Other", label: "Other" },
+  ]}
+  onChange={(e) =>
+    setPaymentForm({
+      ...paymentForm,
+      paymentMethod: e.target.value,
+    })
+  }
+/>
 
               <input
                 value={paymentForm.referenceNumber}

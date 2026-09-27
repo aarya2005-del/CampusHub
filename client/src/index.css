@@ -60,3 +60,111 @@ body {
     margin: 15mm;
   }
 }
+/* ========================================
+   GLOBAL MOBILE FORM FIX
+   ======================================== */
+
+input,
+select,
+textarea,
+button {
+  box-sizing: border-box;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Prevent select controls from forcing mobile overflow */
+select {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+/* Prevent flex/grid children from overflowing */
+main,
+main > *,
+form,
+form > *,
+.min-w-0 {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  select {
+    font-size: 16px;
+  }
+}
+/* ==================================================
+   GLOBAL RESPONSIVE FORM CONTROLS
+   Prevent form elements from breaking mobile layout
+   ================================================== */
+
+input,
+select,
+textarea,
+button {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  main,
+  main > *,
+  form,
+  form > *,
+  .grid,
+  .flex {
+    min-width: 0;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-size: 16px;
+  }
+}

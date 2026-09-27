@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CustomSelect from "../components/CustomSelect";
 import {
   Bell,
   Plus,
@@ -384,17 +385,25 @@ function NoticesPage() {
     Audience
   </label>
 
-  <select
-    name="audience"
-    value={form.audience}
-    onChange={handleChange}
-    className="mt-2 w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-  >
-    <option value="All">All</option>
-    <option value="Students">Students</option>
-    <option value="Faculty">Faculty</option>
-    <option value="Staff">Staff</option>
-  </select>
+ <CustomSelect
+  value={form.audience}
+  placeholder="Select audience"
+  options={[
+    { value: "All", label: "All" },
+    { value: "Students", label: "Students" },
+    { value: "Faculty", label: "Faculty" },
+    { value: "Staff", label: "Staff" },
+  ]}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "audience",
+        value: event.target.value,
+      },
+    })
+  }
+  className="mt-2"
+/>
 </div>
 
               <div>

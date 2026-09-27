@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CustomSelect from "../components/CustomSelect";
 import {
   CalendarDays,
   CheckCircle2,
@@ -191,19 +192,23 @@ function StudentPlannerPage() {
             className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 [color-scheme:dark]"
           />
 
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category.charAt(0).toUpperCase() +
-                  category.slice(1)}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+  value={formData.category}
+  options={categories.map((category) => ({
+    value: category,
+    label:
+      category.charAt(0).toUpperCase() +
+      category.slice(1),
+  }))}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "category",
+        value: event.target.value,
+      },
+    })
+  }
+/>
 
           <input
             type="time"

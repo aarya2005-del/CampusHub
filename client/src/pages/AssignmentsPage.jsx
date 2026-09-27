@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../services/api";
@@ -165,31 +166,20 @@ const handleGradeSubmission = async (
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <select
-            value={form.courseId}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                courseId: e.target.value,
-              })
-            }
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-          >
-            <option value="">
-              Select Subject
-            </option>
-
-            {courses.map((course) => (
-              <option
-                key={course._id}
-                value={course._id}
-              >
-                {course.code} - {course.name}
-              </option>
-            ))}
-          </select>
-
+          <CustomSelect
+  value={form.courseId}
+  placeholder="Select Subject"
+  options={courses.map((course) => ({
+    value: course._id,
+    label: `${course.code} - ${course.name}`,
+  }))}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      courseId: e.target.value,
+    })
+  }
+/>
           <input
             value={form.title}
             onChange={(e) =>
@@ -234,23 +224,26 @@ const handleGradeSubmission = async (
             className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
           />
 
-          <select
-            value={form.status}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                status: e.target.value,
-              })
-            }
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3"
-          >
-            <option value="Published">
-              Published
-            </option>
-            <option value="Draft">
-              Draft
-            </option>
-          </select>
+          <CustomSelect
+  value={form.status}
+  placeholder="Select Status"
+  options={[
+    {
+      value: "Published",
+      label: "Published",
+    },
+    {
+      value: "Draft",
+      label: "Draft",
+    },
+  ]}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      status: e.target.value,
+    })
+  }
+/>
 
           <textarea
             value={form.description}

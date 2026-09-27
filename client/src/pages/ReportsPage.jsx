@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CustomSelect from "../components/CustomSelect";
 import {
   Download,
   FileSpreadsheet,
@@ -586,21 +587,23 @@ function ReportsPage() {
           Report Type
         </label>
 
-        <select
-          value={reportType}
-          onChange={(e) =>
-            setReportType(e.target.value)
-          }
-          className="w-full md:w-72 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-        >
-          <option value="students">
-            Student Report
-          </option>
-
-          <option value="attendance">
-            Attendance Report
-          </option>
-        </select>
+        <CustomSelect
+  value={reportType}
+  options={[
+    {
+      value: "students",
+      label: "Student Report",
+    },
+    {
+      value: "attendance",
+      label: "Attendance Report",
+    },
+  ]}
+  onChange={(event) =>
+    setReportType(event.target.value)
+  }
+  className="w-full md:w-72"
+/>
       </div>
 
       {loading ? (

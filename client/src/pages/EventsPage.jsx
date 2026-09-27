@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CustomSelect from "../components/CustomSelect";
 import {
   CalendarDays,
   MapPin,
@@ -463,23 +464,18 @@ const handleRemoveParticipant = async (registrationId) => {
           />
         </div>
 
-        <select
-          value={filter}
-          onChange={(event) =>
-            setFilter(event.target.value)
-          }
-          className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-        >
-          <option value="all">
-            All Events
-          </option>
-          <option value="upcoming">
-            Upcoming
-          </option>
-          <option value="past">
-            Past
-          </option>
-        </select>
+        <CustomSelect
+  value={filter}
+  options={[
+    { value: "all", label: "All Events" },
+    { value: "upcoming", label: "Upcoming" },
+    { value: "past", label: "Past" },
+  ]}
+  onChange={(event) =>
+    setFilter(event.target.value)
+  }
+  className="w-full md:w-48"
+/>
       </div>
 
       {/* Events */}

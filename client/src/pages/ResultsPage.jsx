@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   Award,
@@ -202,28 +203,17 @@ function ResultsPage() {
             Loading exams...
           </p>
         ) : (
-          <select
-            value={selectedExamId}
-            onChange={handleExamChange}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            <option value="">
-              Select an examination
-            </option>
-
-            {exams.map((examItem) => (
-              <option
-                key={examItem._id}
-                value={examItem._id}
-              >
-                {examItem.course?.code} -{" "}
-                {examItem.examType} -{" "}
-                {new Date(
-                  examItem.examDate
-                ).toLocaleDateString()}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+  value={selectedExamId}
+  placeholder="Select an examination"
+  options={exams.map((examItem) => ({
+    value: examItem._id,
+    label: `${examItem.course?.code || ""} - ${examItem.examType} - ${new Date(
+      examItem.examDate
+    ).toLocaleDateString()}`,
+  }))}
+  onChange={handleExamChange}
+/>
         )}
       </div>
 

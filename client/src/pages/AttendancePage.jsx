@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   CalendarDays,
@@ -187,22 +188,19 @@ const notMarkedCount = Math.max(
     Select Course
   </label>
 
-  <select
-    value={selectedCourse}
-    onChange={(event) => {
-      setSelectedCourse(event.target.value);
-      setAttendance({});
-    }}
-    className="w-full md:w-96 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-  >
-    <option value="">Choose a course</option>
-
-    {courses.map((course) => (
-      <option key={course._id} value={course._id}>
-        {course.code} - {course.name}
-      </option>
-    ))}
-  </select>
+  <CustomSelect
+  value={selectedCourse}
+  placeholder="Choose a course"
+  options={courses.map((course) => ({
+    value: course._id,
+    label: `${course.code} - ${course.name}`,
+  }))}
+  onChange={(event) => {
+    setSelectedCourse(event.target.value);
+    setAttendance({});
+  }}
+  className="w-full md:w-96"
+/>
 </div>
         </div>
 

@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   BookOpen,
@@ -155,38 +156,39 @@ function ExamsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <select
-            name="courseId"
-            value={formData.courseId}
-            onChange={handleChange}
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            <option value="">Select course</option>
+          <CustomSelect
+  value={formData.courseId}
+  placeholder="Select course"
+  options={courses.map((course) => ({
+    value: course._id,
+    label: `${course.code} - ${course.name}`,
+  }))}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "courseId",
+        value: event.target.value,
+      },
+    })
+  }
+/>
 
-            {courses.map((course) => (
-              <option
-                key={course._id}
-                value={course._id}
-              >
-                {course.code} - {course.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="examType"
-            value={formData.examType}
-            onChange={handleChange}
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            {examTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+  value={formData.examType}
+  placeholder="Select exam type"
+  options={examTypes.map((type) => ({
+    value: type,
+    label: type,
+  }))}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "examType",
+        value: event.target.value,
+      },
+    })
+  }
+/>
 
           <input
             type="date"

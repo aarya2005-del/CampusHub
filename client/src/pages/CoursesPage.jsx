@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus, BookOpen } from "lucide-react";
+import CustomSelect from "../components/CustomSelect";
 import toast from "react-hot-toast";
 import api from "../services/api";
 
@@ -294,22 +295,18 @@ function CoursesPage() {
           Select Student
         </label>
 
-        <select
-          value={selectedStudent}
-          onChange={(event) =>
-            setSelectedStudent(event.target.value)
-          }
-          required
-          className="w-full mt-2 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none"
-        >
-          <option value="">Choose a student</option>
-
-          {students.map((student) => (
-            <option key={student._id} value={student._id}>
-              {student.name} — {student.rollNumber}
-            </option>
-          ))}
-        </select>
+        <CustomSelect
+  value={selectedStudent}
+  placeholder="Choose a student"
+  options={students.map((student) => ({
+    value: student._id,
+    label: `${student.name} — ${student.rollNumber}`,
+  }))}
+  onChange={(event) =>
+    setSelectedStudent(event.target.value)
+  }
+  className="mt-2"
+/>
 
         <div className="flex justify-end gap-3 mt-6">
           <button

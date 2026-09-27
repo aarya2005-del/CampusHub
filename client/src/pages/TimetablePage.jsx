@@ -1,3 +1,4 @@
+import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState } from "react";
 import {
   CalendarDays,
@@ -144,39 +145,38 @@ function TimetablePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <select
-            name="courseId"
-            value={formData.courseId}
-            onChange={handleChange}
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            <option value="">Select course</option>
-
-            {courses.map((course) => (
-              <option
-                key={course._id}
-                value={course._id}
-              >
-                {course.code} - {course.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="day"
-            value={formData.day}
-            onChange={handleChange}
-            required
-            className="bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-          >
-            {days.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
-
+          <CustomSelect
+  value={formData.courseId}
+  placeholder="Select course"
+  options={courses.map((course) => ({
+    value: course._id,
+    label: `${course.code} - ${course.name}`,
+  }))}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "courseId",
+        value: event.target.value,
+      },
+    })
+  }
+/>
+          <CustomSelect
+  value={formData.day}
+  placeholder="Select day"
+  options={days.map((day) => ({
+    value: day,
+    label: day,
+  }))}
+  onChange={(event) =>
+    handleChange({
+      target: {
+        name: "day",
+        value: event.target.value,
+      },
+    })
+  }
+/>
           <input
             type="time"
             name="startTime"
