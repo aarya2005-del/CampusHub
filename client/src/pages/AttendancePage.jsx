@@ -297,58 +297,63 @@ const notMarkedCount = Math.max(
           ) : (
             <div className="space-y-3">
               {filteredStudents.map((student) => (
-                <div
-                  key={student._id}
-                  className="flex items-center justify-between gap-4 bg-slate-950/70 border border-slate-800 rounded-2xl p-4"
-                >
-                  <div>
-                    <h3 className="font-bold">
-                      {student.name}
-                    </h3>
+  <div
+    key={student._id}
+    className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-950/70 border border-slate-800 rounded-2xl p-4"
+  >
+    <div className="min-w-0">
+      <h3 className="font-bold">
+        {student.name}
+      </h3>
 
-                    <p className="text-sm text-slate-400 mt-1">
-                      {student.rollNumber} •{" "}
-                      {student.department} • Year{" "}
-                      {student.year}
-                    </p>
-                  </div>
+      <p className="text-sm text-slate-400 mt-1 leading-6 break-words">
+        {student.rollNumber} •{" "}
+        {student.department} • Year{" "}
+        {student.year}
+      </p>
+    </div>
 
-                  <div className="flex gap-2">
-                   <button
-  onClick={() =>
-    markAttendance(student._id, "present")
-  }
-  disabled={
-  attendanceLoading ||
-  savingStudent === student._id
-}
-  className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition ${
-    attendance[student._id] === "present"
-      ? "bg-green-500 text-white border-green-400"
-      : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
-  } disabled:opacity-50`}
->
-  <CheckCircle2 size={18} />
-  Present
-</button>
+    <div className="grid grid-cols-2 gap-2 w-full md:w-auto shrink-0">
+      <button
+        type="button"
+        onClick={() =>
+          markAttendance(student._id, "present")
+        }
+        disabled={
+          attendanceLoading ||
+          savingStudent === student._id
+        }
+        className={`flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 rounded-xl border transition ${
+          attendance[student._id] === "present"
+            ? "bg-green-500 text-white border-green-400"
+            : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
+        } disabled:opacity-50`}
+      >
+        <CheckCircle2 size={18} className="shrink-0" />
+        <span>Present</span>
+      </button>
 
-                    <button
-  onClick={() =>
-    markAttendance(student._id, "absent")
-  }
-  disabled={savingStudent === student._id}
-  className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition ${
-    attendance[student._id] === "absent"
-      ? "bg-red-500 text-white border-red-400"
-      : "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
-  } disabled:opacity-50`}
->
-  <XCircle size={18} />
-  Absent
-</button>
-                  </div>
-                </div>
-              ))}
+      <button
+        type="button"
+        onClick={() =>
+          markAttendance(student._id, "absent")
+        }
+        disabled={
+          attendanceLoading ||
+          savingStudent === student._id
+        }
+        className={`flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 rounded-xl border transition ${
+          attendance[student._id] === "absent"
+            ? "bg-red-500 text-white border-red-400"
+            : "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
+        } disabled:opacity-50`}
+      >
+        <XCircle size={18} className="shrink-0" />
+        <span>Absent</span>
+      </button>
+    </div>
+  </div>
+))}
             </div>
           )}
         </div>
