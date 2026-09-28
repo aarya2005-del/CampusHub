@@ -10,6 +10,15 @@ CampusHub provides separate experiences for administrators and students, coverin
 
 **GitHub Repository:** https://github.com/aarya2005-del/CampusHub
 
+### Demo Access
+
+You can explore the deployed application using the following demo account:
+
+**Email:** demo@gmail.com 
+**Password:** 123456
+
+> This account contains sample data and is provided only for demonstrating the application.
+
 ---
 
 ## Features
