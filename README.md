@@ -88,7 +88,35 @@ Cloudinary is used for cloud-based media storage.
 CampusHub supports image/file upload functionality for features such as Lost & Found and other supported resources.
 
 ---
+## Screenshots
 
+### Admin Dashboard
+
+![CampusHub Admin Dashboard](screenshots/admin-dashboard.png)
+
+### Analytics
+
+![CampusHub Analytics Dashboard](screenshots/analytics.png)
+
+### Student Management
+
+![CampusHub Student Management](screenshots/students.png)
+
+### Fee Management
+
+![CampusHub Fee Management](screenshots/fees.png)
+
+### Student Dashboard
+
+![CampusHub Student Dashboard](screenshots/student-dashboard.png)
+
+### Mobile Experience
+
+<p align="center">
+  <img src="screenshots/mobile-dashboard.jpeg" alt="CampusHub Mobile Dashboard" width="350">
+</p>
+
+---
 ## Responsive Design
 
 CampusHub is designed to work across:
