@@ -28,7 +28,7 @@ function DashboardPage() {
       try {
         const response = await api.get("/dashboard/stats");
 
-        console.log("Dashboard API:", response.data);
+        
 
         setDashboardData(response.data);
       } catch (error) {
@@ -48,7 +48,7 @@ function DashboardPage() {
         "/analytics/students-by-year"
       );
 
-      console.log("Students by Year API:", response.data);
+      
 
       setStudentYearData(response.data.stats || []);
     } catch (error) {
@@ -73,7 +73,7 @@ function DashboardPage() {
           "/analytics/students-by-department"
         );
 
-        console.log("Department API:", response.data);
+        
 
         setDepartmentData(response.data.stats || []);
       } catch (error) {
@@ -92,7 +92,7 @@ function DashboardPage() {
     try {
       const response = await api.get("/analytics/attendance");
 
-      console.log("Attendance API:", response.data);
+      
 
       setAttendanceData(response.data.data);
     } catch (error) {
@@ -113,10 +113,7 @@ useEffect(() => {
         "/registrations/analytics"
       );
 
-      console.log(
-        "Event Participation API:",
-        response.data
-      );
+      
 
       setEventParticipationData(
         response.data.stats || []
@@ -139,11 +136,7 @@ useEffect(() => {
         "/analytics/attendance-trend"
       );
 
-      console.log(
-        "Attendance Trend API:",
-        response.data
-      );
-
+      
       const monthNames = [
         "Jan",
         "Feb",
